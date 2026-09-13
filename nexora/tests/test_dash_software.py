@@ -43,3 +43,18 @@ def test_overview_shows_inventory_when_gold_is_not_published():
     content=json.dumps(overview.layout(ctx,{}),cls=PlotlyJSONEncoder)
     assert '12' in content and 'Explorer le parc' in content
     assert 'pas encore publi' in content
+
+
+def test_product_without_pool_has_analysis_on_the_same_page():
+    data={'available':True,'period_start':'2026-01-01','period_end':'2026-01-10',
+          'analyzed':3,'activity':{'active':1,'inactive':1,'unknown':1},
+          'footprint':[('Filiale',3)],'frequency':[(0,1),(3,1)],
+          'coverage':[{'observed':10,'expected':10,'count':2},{'observed':4,'expected':10,'count':1}]}
+    ctx=SimpleNamespace(wid='workspace',call=lambda *args,**kwargs:data)
+    p={'software_id':'firefox','name':'Firefox','machines':3,'entitlements':[{'metric':'unmetered'}]}
+    page=software.detail(ctx,p,None)
+    rendered=json.dumps(page,cls=PlotlyJSONEncoder)
+    assert rendered.count('"type": "Graph"')==4
+    assert '#/savings' not in rendered
+    assert 'Sans d' not in rendered  # no repeated per-subsidiary unmetered table
+    assert '2026-01-10' in rendered

@@ -22,7 +22,7 @@ pas des mesures de simultanéité : ne pas la comparer directement aux
 capacités des 12 pools du scénario analytique, qui reste un jeu distinct.
 
 PostgreSQL porte un index de consultation reconstruisible, avec une ligne par
-machine, utilisateur ou site. L’API filtre et pagine côté serveur (100 résultats
+machine, utilisateur ou site. Le service Python filtre et pagine côté serveur (100 résultats
 maximum), puis fournit les relations de l’élément ouvert. Les dashboards en cartes
 permettent d’ouvrir une entité, un site ou une catégorie avant d’accéder aux détails.
 Les périmètres logiciels des espaces sont appliqués aux listes et relations.
@@ -88,7 +88,7 @@ Agents → Beacon général → backend DIGIMON Node.js → API REST DIGIMON →
 Les 16 500 prestataires fictifs (hypothèse de 15 % des salariés) disposent chacun d’un portable dédié et de logiciels installés liés à leurs observations. Les salariés utilisent 100 000 postes, dont certains partagés. Le modèle distingue `employment_type` et `form_factor`.
 
 
-### Catalogue et droits : modèle en cours d’intégration
+### Catalogue, installations et licences
 
 Le modèle distingue les produits (`products`), les installations par machine
 (`installations`) et les droits (`entitlements`). Les identifiants sont stables ;
@@ -96,11 +96,11 @@ les références vers un produit, une machine ou une filiale inexistante sont re
 Un droit précise son unité : utilisateur nommé, appareil, concurrence, cœur ou hôte.
 Une quantité d’installation ne prouve pas une consommation contractuelle.
 
-Le scénario v7 contient des hypothèses explicites de droits par appareil pour RHEL,
-Windows et Microsoft 365. Ces hypothèses servent à tester le modèle et ne décrivent
-pas les règles commerciales des éditeurs. Elles n’autorisent pas encore un calcul de
-conformité ou d’économie : les écrans financiers utilisent toujours l’historique des
-pools et doivent être raccordés au nouveau modèle avant validation de la démo.
+Le scénario d’entreprise contient des quantités et unités fictives par produit et
+filiale, ainsi que des composants sans décompte. Ces hypothèses servent à tester le
+modèle et ne décrivent pas les règles commerciales des éditeurs. Une installation
+sans activité n’établit pas à elle seule un droit libérable. Les simulations
+financières doivent conserver l’unité du contrat et un coût renseigné.
 
 
 ### Analyse des installations persistées
@@ -111,7 +111,7 @@ personnes sur une machine sont réunis. Les journées absentes restent distincte
 journées observées sans usage. Le rapport n’est activé que si la génération courante
 n’a pas changé pendant le calcul.
 
-La route authentifiée `inventory/installation-usage` ne retourne que les logiciels
+Le service Python `inventory_service.installation_usage` ne retourne que les logiciels
 suivis par l’espace. Cette analyse produit une liste d’installations à examiner ; elle
 ne convertit pas automatiquement ces installations en licences libérables ni en euros.
 Les observations initiales couvrent douze produits applicatifs. Le script
@@ -125,15 +125,15 @@ non classée. Les autres pools sont exclus des compteurs FlexLM.
 
 ## Périmètres de tous les produits
 
-Le catalogue de sélection fusionne les pools historiques et les produits installés de la génération MinIO active. RHEL, Windows, Microsoft 365 et les composants sans pool sont sélectionnables. Le champ API historique `pool_ids` conserve son nom pour compatibilité ; il transporte aussi les identifiants stables `software_id` des produits sans pool. Une capacité absente reste nulle.
+Le catalogue de sélection fusionne les pools historiques et les produits installés de la génération MinIO active. RHEL, Windows, Microsoft 365 et les composants sans pool sont sélectionnables. Le champ de sélection `pool_ids` conserve son nom pour compatibilité ; il transporte aussi les identifiants stables `software_id` des produits sans pool. Une capacité absente reste nulle.
 
 L’index associe les produits installés aux machines, à leurs sites et aux utilisateurs reliés par les observations. Les droits globaux ne sont pas automatiquement attribués à un espace partiel. Après évolution de la projection, `python -m scripts.reindex_enterprise_inventory` reconstruit l’index depuis la génération active et conserve son manifeste, ses partitions et ses résultats analytiques. Le basculement est refusé si la génération active a changé pendant la reconstruction.
 
 ### Examiner les installations sans usage
 
 Dans Coûts & économies, « Examiner » ouvre une liste paginée des machines du
-produit sans usage sur toute la période. La route authentifiée
-`inventory/installation-usage/machines?pool=…&offset=0&limit=25` croise la table Delta
+produit sans usage sur toute la période. Le service Python
+`inventory_service.installation_usage_machines` croise la table Delta
 Gold avec les machines de la projection active et le périmètre de l’espace.
 Elle exclut les relevés incomplets, les périodes différentes, les machines
 absentes de l’inventaire actif et celles dont un utilisateur a utilisé le produit.
@@ -224,3 +224,31 @@ uniquement les dimensions produits, filiales et licences du manifeste actif.
 Elle évite ainsi de recompter les installations de toutes les machines à chaque
 ouverture. Les contrôles d’accès et le périmètre logiciel restent appliqués.
 Le décompte des installations reste disponible dans le catalogue et l’inventaire.
+
+
+## Analyses intégrées aux fiches Dash
+
+`app.business.asset_analysis` construit les analyses à partir des références et
+versions du manifeste publié. Il contrôle l’accès à l’espace et son périmètre
+avant les lectures. Les produits sont identifiés par `software_id`, jamais par
+une recherche approximative sur leur nom.
+
+La fiche produit croise les installations, machines, sites et filiales avec les
+résultats Gold par installation. Elle fournit le déploiement par filiale,
+l’activité, la distribution des jours actifs et la couverture des observations.
+La fréquence utilise uniquement les périodes entièrement observées. Une activité
+positive reste prouvée même si certains relevés manquent ; zéro activité avec une
+couverture incomplète reste indéterminé. Les graphiques sont consultables sur la
+fiche, sans passage obligatoire par Coûts & économies.
+
+La fiche machine lit ses dimensions, installations, utilisateurs reliés et
+observations du dernier relevé dans la même publication. Elle croise ces données
+avec les jours actifs de la période Gold. Les versions explicites des installations
+et les versions des observations sont conservées ; une version absente n’est pas
+inventée. Le fonctionnement d’un système est distingué de l’activité applicative.
+
+Ces lectures ne lancent ni collecte ni Spark. Les filtres machine et produit sont
+transmis au lecteur Delta. Les graphiques de fréquence sont des distributions
+sur la période, pas des courbes journalières reconstituées. En l’absence de cette
+publication d’entreprise, l’inventaire reste consultable et l’absence d’analyse
+est affichée explicitement.

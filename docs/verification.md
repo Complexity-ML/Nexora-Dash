@@ -14,14 +14,17 @@ ne permet pas de conclure à l’inactivité.
 
 ## Contrôles automatisés
 
-- Backend : 95 tests, dont les périmètres partiels, produits homonymes, relations,
+- Services Python : périmètres partiels, produits homonymes, relations,
   persistance, autorisations et publication concurrente des analyses.
-- Frontend : 22 tests et compilation TypeScript/Vite.
+- Dash : callbacks, sessions, formulaires, navigation Plotly et exports ;
+  aucune compilation React/TypeScript n’est requise.
+- Projections analytiques : filtrage par identifiant stable, lecture de versions
+  fixes et séparation des jours absents et des périodes sans activité.
 - Génération : lecture et validation des partitions avant activation,
   relance sans doublons et maintien du rapport actif en cas d’échec.
 - Notes : effacement du texte et de ses révisions ; le rollback irréversible
   échoue sans modifier la révision de la base.
-- Parcours HTTP partagé : espaces, membres, coûts, dossiers, notes, export,
+- Parcours métier et callbacks Dash : espaces, membres, coûts, dossiers, notes, export,
   isolation, droits lecteur et révocation de session sur une base de tests dédiée.
 
 Les parcours catalogue, périmètre, inventaire, analyses et examen des installations
@@ -34,7 +37,7 @@ la vérification visuelle après une modification d’interface.
 - Démarrage à vide : 365 jours et 4 380 relevés de capacité générés directement en Delta ; aucun fichier Silver historique requis.
 - Migration de l'inventaire : comparaison du contenu des dimensions et des 730 partitions quotidiennes des deux familles d'observations avant publication.
 - Historique actif des capacités : 4 452 lignes sur 366 jours, conservant les relevés ajoutés à la démo ; résultats Spark identiques avant et après conversion.
-- API contrôlée après purge et redémarrage : 30 produits, 138 500 machines, analyses RHEL et périmètres accessibles.
+- Inventaire d’entreprise de référence : 30 produits, 138 500 machines, analyses RHEL et périmètres accessibles aux services Python.
 - Empreintes des comptes, membres, espaces, coûts, dossiers, notes et périmètres identiques avant et après bascule.
 
 La rétention automatique destructive reste désactivée. Le test de concurrence est lancé séparément avec `TEST_DELTA_MINIO=1` ; il est ignoré dans la suite sans MinIO.
@@ -43,7 +46,7 @@ La rétention automatique destructive reste désactivée. Le test de concurrence
 
 La démonstration ne valide pas la tenue sous charge du SI réel. Les règles de
 licence, coûts et droits libérables doivent être confirmés avant tout chiffrage.
-Le contrat API DIGIMON et l’intégration du frontend dans sa route dédiée restent
+Le contrat API DIGIMON et l’intégration de Dash dans sa route dédiée restent
 à convenir avec son équipe. Nexora consomme uniquement l’API DIGIMON, jamais
 les agents ou le Beacon directement.
 

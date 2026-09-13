@@ -7,6 +7,7 @@
 - Inventaire, catalogue, licences, analyses, coûts, dossiers et notes accessibles dans Dash.
 - Lecture des publications Gold sans déclenchement de Spark à chaque navigation.
 - Graphiques de répartition du parc, comparaisons par filiale et système, usages quotidiens, activité des installations, licences par unité, pression des pools et classement des opportunités.
+- Parc logiciel : classement des déploiements ; fiches produit avec répartition par filiale, activité, fréquence et couverture. Fiches machine avec historique d’activité par produit, versions et utilisateurs reliés.
 - Navigation depuis un graphique vers les éléments correspondants ; clic sur les VM vérifié dans la démonstration.
 - Export CSV du catalogue et des licences : recherche et périmètre courants, toutes les pages, lignes par filiale et unité, droits revérifiés au téléchargement.
 - Export HTML imprimable d’un dossier via Dash avec vérification d’accès au téléchargement.

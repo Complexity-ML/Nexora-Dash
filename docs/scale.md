@@ -92,39 +92,18 @@ Après migration, `python -m scripts.rebuild_software_summary` depuis `nexora/`
 reconstruit le résumé de l’index courant sans changer son pointeur. Les prochains
 index produisent automatiquement leur résumé.
 
-`python -m scripts.benchmark_local_reads --workspace demo --repeats 4 --concurrency 4`
-mesure les routes locales d’inventaire, de logiciels et d’usages. La commande est
-limitée aux hôtes locaux, n’effectue que des lectures métier et ferme sa session.
-La première observation n’est pas présentée comme un véritable démarrage à froid.
+## Mesures et limites après migration Dash
 
-Sur la démonstration de 138 500 machines, la médiane de quatre lectures concurrentes
-du catalogue est passée d’environ 5,74 s à 0,12 s après matérialisation des comptes.
-Les deux mesures ont renvoyé 100 482 octets et aucune erreur. Cet échantillon court
-sur le Mac local ne constitue pas un test de charge du réseau Safran ni une mesure
-du temps de rendu complet dans le navigateur.
+Les anciennes mesures de routes HTTP ne décrivent pas le temps de réponse des
+callbacks Dash et ne sont pas une preuve de performance actuelle. Le résumé
+matérialisé de l’index reste utilisé pour éviter de recalculer le catalogue à
+chaque lecture.
 
-## Lectures simultanées de plusieurs vues
+Les nouvelles fiches utilisent des filtres Delta par identifiant et ne transmettent
+que les distributions calculées au navigateur. Une mesure locale ponctuelle des
+services Python a donné environ 0,22 s pour Firefox et 0,34 s pour WS-000596.
+Ces temps excluent le rendu Plotly, le démarrage à froid et la concurrence ; ils ne
+constituent pas un engagement de performance sur le réseau cible.
 
-L’option `--mixed` entrelace les requêtes d’inventaire, de catalogue et d’usages,
-sous une limite de concurrence commune :
-
-```sh
-python -m scripts.benchmark_local_reads --workspace demo --repeats 20 --concurrency 8 --mixed
-```
-
-La mesure locale sur le parc de démonstration a donné, après une première lecture
-de chaque route, 20 échantillons par route et aucune erreur sur les 60 lectures :
-
-| Route | Médiane | p95 | Taille de réponse décodée |
-| --- | ---: | ---: | ---: |
-| Machines, première page de 25 | 572 ms | 772 ms | 36 820 octets |
-| Catalogue logiciel | 110 ms | 139 ms | 100 482 octets |
-| Rapport d’usages des installations | 64 ms | 93 ms | 7 750 octets |
-
-Les latences sont mesurées après acquisition d’une place dans la limite de
-concurrence ; elles n’incluent pas la file d’attente du générateur. Les tailles
-sont celles des corps décodés par HTTPX, pas les octets compressés sur le réseau.
-Le test utilise une session de démonstration, pas huit utilisateurs distincts.
-Il ne mesure pas un recalcul Spark, un démarrage à froid, le rendu React ou le
-réseau Safran. Les mesures de charge de production restent à effectuer sur
-l’environnement cible avec des sessions et périmètres représentatifs.
+La validation de charge doit inclure plusieurs sessions, des espaces de périmètres
+différents, les lectures à froid et le rendu complet dans le navigateur.

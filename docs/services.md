@@ -7,6 +7,7 @@ Nexora-Dash n’expose pas de contrat REST métier. Les callbacks Dash utilisent
 | `app.business.workspace_service` | Authentification, espaces, membres, coûts, dossiers et notes |
 | `app.business.portfolio_service` | Catalogue et périmètre logiciel |
 | `app.business.inventory_service` | Inventaire paginé et installations |
+| `app.business.asset_analysis` | Croisements Delta et distributions intégrées aux fiches produit et machine |
 | `app.business.exploration` | Agrégations croisées et qualité des dimensions |
 | `app.business.settings_service` | Paramètres d’analyse partagés |
 | `app.services.published_analytics` | Lecture des résultats Gold publiés |

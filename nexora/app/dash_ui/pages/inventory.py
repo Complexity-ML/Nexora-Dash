@@ -1,7 +1,7 @@
 from dash import html
 import json
 import plotly.graph_objects as go
-from app.business import exploration
+from app.business import exploration, asset_analysis
 from app.business.errors import BusinessError
 from app.business import inventory_service as service
 from app.dash_ui.components import header, stats, card, link, table, number, empty, filter_control, pager, plot, route
@@ -26,6 +26,9 @@ def layout(ctx, query):
     if entity not in ENTITIES: entity='machines'
     offset=max(0,int(query.get('offset',0)))
     filters={k:query.get(k,'') for k in ('subsidiary','country','region','site','kind','environment')}
+    if entity=='machines' and query.get('detail'):
+        data=ctx.call(asset_analysis.machine_analysis,ctx.wid,query['detail'],lake=True)
+        return detail(data,entity,ctx,query)
     data=ctx.call(service.inventory,ctx.wid,entity=entity,q=query.get('q','')[:200],
                   offset=offset,limit=25,detail=query.get('detail',''),**filters,lake=True)
     counts=data.get('counts',{})
@@ -83,12 +86,21 @@ def detail(data, entity, ctx, query):
     row=data['rows'][0]
     title=row.get('name') or row.get('display_name') or 'Site'
     products=row.get('installed_products',[])
-    observations=row.get('observations',[])
+    analysis=row.get('analysis',{})
+    observations=row.get('relationships',[])
     software=ctx.call(service.inventory_software,ctx.wid,lake=True)
     names={p.get('license_pool_id') or p['software_id']:p['name'] for p in software}
     installations=[{'name':p.get('name','—'),'version':p.get('version') or '—'} for p in products]
     if not installations:
         installations=[{'name':names.get(key,key),'version':'—'} for key in row.get('software',[])]
+    if analysis.get('products'):
+        installations=[{'name':p['name'],'version':', '.join(p['versions']) or 'Version non transmise'} for p in analysis['products']]
+    else:
+        versions={}
+        for r in observations:
+            if r.get('software_version'): versions.setdefault(names.get(r['license_pool_id'],r['license_pool_id']),set()).add(r['software_version'])
+        for item in installations:
+            item['version']=', '.join(sorted(versions.get(item['name'],[]))) or 'Version non transmise'
     configuration=[('operating_system','Système'),('cpu_cores','Cœurs'),('memory_gb','Mémoire (Go)'),('environment','Environnement'),
         ('department','Département'),('employment_type','Profil'),('email','E-mail'),('status','Statut')]
     config=[{'name':label,'value':ENV.get(str(row[key]),str(row[key]))} for key,label in configuration if row.get(key) is not None]
@@ -96,10 +108,27 @@ def detail(data, entity, ctx, query):
     if row.get('host_id'): relations.append(link('Hôte →','inventory',entity='machines',detail=row['host_id']))
     for mid in row.get('machines',[]):
         relations.append(link(mid,'inventory',entity='machines',detail=mid))
+    for u in analysis.get('users',[]):
+        relations.append(html.Div([html.Strong(u['display_name']),html.Small(' · '.join(str(u[k]) for k in ('department','employment_type') if u.get(k)))]))
     if entity=='sites': relations.append(link('Explorer les machines du site →','inventory',entity='machines',site=row['site_id']))
+    evidence=analysis.get('evidence',[])
+    chart=None
+    if evidence:
+        evidence=sorted(evidence,key=lambda r:r['name'])
+        fig=go.Figure()
+        for label,color,values in [
+            ('Jours actifs','#64d5b2',[r['active_days'] for r in evidence]),
+            ('Observés sans activité','#68b4ec',[r['observed_days']-r['active_days'] for r in evidence]),
+            ('Non observés','#8194a5',[r['period_days']-r['observed_days'] for r in evidence])]:
+            fig.add_bar(y=[r['name'] for r in evidence],x=values,name=label,orientation='h',marker_color=color,hovertemplate='%{y}<br>%{x} jours<extra>%{fullData.name}</extra>')
+        fig.update_layout(barmode='stack',height=max(380,len(evidence)*38))
+        fig.update_yaxes(autorange='reversed',automargin=True)
+        fig.update_xaxes(title='Jours sur la période analysée')
+        chart=card(html.H2('Activité des logiciels sur cette machine'),html.Small('Du '+str(analysis.get('period_start'))+' au '+str(analysis.get('period_end'))+' · activité applicative, disponibilité pour les systèmes.'),plot(fig))
     return html.Div([link('← '+ENTITIES[entity],'inventory',entity=entity),
         header(title,' · '.join(str(row.get(k)) for k in ('subsidiary','site','country') if row.get(k))),
+        chart,
         html.Div([card(html.H2('Configuration'),table([('name',''),('value','')],config)),
-                  card(html.H2('Logiciels observés'),table([('name','Produit'),('version','Version')],installations))],className='split'),
+                  card(html.H2('Logiciels observés'),table([('name','Produit'),('version','Version')],installations))],className='settings-profile'),
         card(html.H2('Relations'),html.Div(relations,className='stack') if relations else empty('Aucune relation complémentaire remontée.')),
         html.Details([html.Summary('Provenance'),html.P('DIGIMON · '+str(row.get('digimon_reported_source') or 'Inventaire consolidé'))])],className='stack')
