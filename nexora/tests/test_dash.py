@@ -184,3 +184,25 @@ def test_dossier_download_revalidates_space_membership(dash_context):
     denied=download()
     assert 'download' not in denied.json['response']
     assert 'Private evidence' not in denied.text
+
+
+def test_user_without_memberships_can_create_space_or_logout(dash_context):
+    app,store,password=dash_context
+    # Use a separate account: demo seeding must not restore its memberships.
+    with store.connect() as db:
+        from app.business.store import password_hash
+        uid=str(uuid4());email=uid+'@example.invalid'
+        db.execute('INSERT INTO users VALUES (%s,%s,%s,%s)',(uid,email,'No workspace',password_hash(password)))
+    client=app.server.test_client()
+    command(app,client,'login',{'email':email,'password':password})
+    response=render(client)
+    assert response.status_code==200 and 'Créer mon espace' in json.dumps(response.json,ensure_ascii=False)
+    created=command(app,client,'workspace-create',{'new-workspace':'My first space'})
+    assert 'Espace créé' in json.dumps(created.json,ensure_ascii=False)
+    with client.session_transaction() as session:
+        wid=session['workspace'];token=session['token']
+    with store.connect() as db:
+        assert db.execute('SELECT role FROM members WHERE workspace_id=%s AND user_id=%s',(wid,uid)).fetchone()['role']=='admin'
+        db.execute('DELETE FROM members WHERE workspace_id=%s',(wid,))
+    assert command(app,client,'logout',{}).status_code==200
+    assert store.user_for_token(token) is None

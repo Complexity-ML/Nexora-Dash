@@ -33,3 +33,13 @@ def test_license_list_is_paginated_and_details_respect_scope(monkeypatch):
     assert 'Scoped subsidiary' in detail
     unavailable=json.dumps(software.licenses(ctx,{'product':'outside'}),cls=PlotlyJSONEncoder)
     assert 'Scoped subsidiary' not in unavailable
+
+
+def test_overview_shows_inventory_when_gold_is_not_published():
+    from app.dash_ui.pages import overview
+    def unavailable():raise BusinessError(409,'No Gold')
+    ctx=SimpleNamespace(wid='workspace',summary=unavailable,
+        call=lambda *args,**kwargs:{'counts':{'machines':12,'users':8,'sites':2}})
+    content=json.dumps(overview.layout(ctx,{}),cls=PlotlyJSONEncoder)
+    assert '12' in content and 'Explorer le parc' in content
+    assert 'pas encore publi' in content

@@ -94,7 +94,14 @@ def create_app(*, testing=False, store=None):
             if exc.status_code==401: return login_layout()
             # Access may have been revoked since the last request; choose an accessible space.
             session.pop('workspace',None)
-            context=current_context()
+            try:context=current_context()
+            except BusinessError as retry:
+                if retry.status_code==401:return login_layout()
+                if retry.status_code!=404:raise
+                return html.Div([html.H1('Votre espace d’analyse'),
+                    html.P('Vous n’avez pas encore d’espace accessible. Créez-en un ou demandez à votre équipe de vous ajouter.'),
+                    field('new-workspace','Nom de l’espace',''),action('Créer mon espace','workspace-create'),
+                    action('Se déconnecter','logout')],className='login card')
         page,query=parse_location(location)
         if page not in PAGES: page='overview'
         try: content=PAGES[page][1](context,query)

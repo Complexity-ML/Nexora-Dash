@@ -3,7 +3,7 @@ from decimal import Decimal, InvalidOperation
 from flask import session
 from app.business import workspace_service as business, portfolio_service as portfolio, settings_service as settings
 from app.business.errors import BusinessError
-from app.dash_ui.context import current_context, business_store
+from app.dash_ui.context import current_context, business_store, authenticated_user
 from app.dash_ui.components import route
 
 
@@ -22,19 +22,20 @@ def execute(name, values):
         session.clear()
         session['token']=result['token']
         return 'Connexion établie.',route('overview')
+    if name in ('logout','workspace-create'):
+        user,store=authenticated_user()
+        if name=='logout':
+            business.logout(session['token'],user,store)
+            session.clear()
+            return 'Déconnecté.',route('overview')
+        result=business.create_workspace(business.Name(name=values['new-workspace']),user,store)
+        session['workspace']=result['id']
+        return 'Espace créé. Sélectionnez son périmètre.',route('portfolio')
     ctx=current_context()
-    if name=='logout':
-        business.logout(session['token'],ctx.user,ctx.store)
-        session.clear()
-        return 'Déconnecté.',route('overview')
     if name=='refresh': return 'Résultats actualisés.',None
     if name=='workspace-save':
         ctx.call(business.rename_workspace,ctx.wid,business.Name(name=values['workspace-name']))
     elif name=='profile-save': ctx.call(business.rename_user,business.Name(name=values['profile-name']))
-    elif name=='workspace-create':
-        result=ctx.call(business.create_workspace,business.Name(name=values['new-workspace']))
-        session['workspace']=result['id']
-        return 'Espace créé. Sélectionnez son périmètre.',route('portfolio')
     elif name in ('member-add','account-create') or name.startswith('member-save:'):
         suffix=':'+name.split(':',1)[1] if name.startswith('member-save:') else ''
         prefix='account' if name=='account-create' else 'member'

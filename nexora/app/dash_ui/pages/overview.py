@@ -2,18 +2,32 @@ from dash import html
 import json
 import plotly.graph_objects as go
 from app.business import exploration
+from app.business.errors import BusinessError
 from app.dash_ui.components import header, stats, card, link, table, number, plot, daily_figure, empty, route
 from app.business import inventory_service as inventory
 
 
 def layout(ctx, query):
-    summary=ctx.summary()
+    try:summary=ctx.summary()
+    except BusinessError as exc:
+        if exc.status_code!=409:raise
+        summary=None
     estate=ctx.call(inventory.inventory,ctx.wid,limit=1,lake=True)
     counts=estate.get('counts',{})
+    if summary is None:
+        return html.Div([header('Votre parc, dans la durée.','L’inventaire reste consultable pendant la préparation des analyses.'),
+            stats([('Machines et VM',number(counts.get('machines')),'Dans votre périmètre'),
+                   ('Utilisateurs',number(counts.get('users')),'Dans votre périmètre'),
+                   ('Sites',number(counts.get('sites')),'Implantations observées')]),
+            empty('Les analyses de capacité ne sont pas encore publiées.'),
+            html.Div([link('Explorer le parc →','inventory'),link('Parc logiciel →','software'),link('Licences →','licenses')],className='actions')],className='stack')
     opportunities=sorted(summary.inactive,key=lambda row:row.recovery_potential,reverse=True)
     distributions=[]
     for dimension,title in [('subsidiary','Le parc par filiale'),('os','Systèmes du parc')]:
-        data=ctx.call(exploration.aggregate,ctx.wid,entity='machines',dimension=dimension,measure='count',limit=12,lake=True)
+        try:data=ctx.call(exploration.aggregate,ctx.wid,entity='machines',dimension=dimension,measure='count',limit=12,lake=True)
+        except BusinessError as exc:
+            if exc.status_code!=409:raise
+            continue
         rows=data['rows']
         fig=go.Figure(go.Bar(x=[r['value'] for r in rows],y=[r['label0'] or 'Non remonté' for r in rows],orientation='h',
             customdata=[route('explore',entity='machines',dimension=dimension,selection=json.dumps({dimension:r['key0']}),view='records') for r in rows]))

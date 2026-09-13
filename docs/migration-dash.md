@@ -23,7 +23,7 @@ Les tests `test_dash.py` exercent les callbacks, sessions, refus d’accès, not
 - Vérification des exports tabulaires et autres fonctions de confort de l’ancienne interface.
 - Compléter les vues économiques interactives et les vues de suivi des collectes.
 - Vérifier tous les parcours métier et graphiques dans le navigateur, avec plusieurs largeurs et des espaces à périmètre partiel.
-- Vérifier le cas d’un utilisateur sans espace accessible et la navigation lorsque les publications sont absentes.
+- Vérifier visuellement les états sans espace ou sans publication ; les parcours sont désormais couverts par les tests de callbacks et de pages.
 - Valider le démarrage d’une installation neuve avec ses données de démonstration.
 - Préparer la livraison finale et son archive source.
 

@@ -44,12 +44,17 @@ def business_store():
     return current_app.config.get('NEXORA_BUSINESS_STORE') or workspace.get_business_store()
 
 
-def current_context(wid=None):
+def authenticated_user():
     store = business_store()
     user = store.user_for_token(session.get('token', ''))
     if not user:
         session.clear()
         raise BusinessError(401, 'Connectez-vous à votre espace.')
+    return user,store
+
+
+def current_context(wid=None):
+    user,store=authenticated_user()
     spaces = workspace.me(user=user, store=store)['workspaces']
     selected = wid or session.get('workspace')
     if selected is None and spaces:
