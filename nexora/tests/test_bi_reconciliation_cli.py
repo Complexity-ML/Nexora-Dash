@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 import pytest
-from scripts import revoke_restored_bi_readers as cli
+from app.commands import revoke_restored_bi_readers as cli
 
 
 def test_root_must_be_selected_explicitly(monkeypatch,capsys):

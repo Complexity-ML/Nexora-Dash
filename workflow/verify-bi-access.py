@@ -14,7 +14,7 @@ def main():
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[1]
     sys.path.insert(0, str(repo/'nexora'))
-    from scripts.bi_s3_policy import policy
+    from app.commands.bi_s3_policy import policy
     name = 'bi-proof-' + uuid4().hex
     secret = secrets.token_urlsafe(32)
     folder = '/tmp/' + name

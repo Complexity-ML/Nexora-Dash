@@ -5,7 +5,7 @@ from app.config import get_settings
 from app.dependencies import get_pipeline
 from app.business.store import BusinessStore
 from app.collection.maintenance_lock import protect_deletion
-from scripts.activate_delta import business_fingerprint
+from devtools.migrate.activate_delta import business_fingerprint
 
 
 

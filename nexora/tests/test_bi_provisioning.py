@@ -2,7 +2,7 @@ import json
 import stat
 import pytest
 from test_collection_runner import context
-from scripts import issue_bi_reader as cli
+from app.commands import issue_bi_reader as cli
 from app.bi.auth import authenticate_reader, BIUnauthorized
 
 
@@ -91,7 +91,7 @@ def test_process_killed_after_delivery_cannot_activate_reader(context, tmp_path)
     path = tmp_path / 'interrupted.json'
     code = '''
 import os, signal, stat
-from scripts import issue_bi_reader as cli
+from app.commands import issue_bi_reader as cli
 from app.business.store import BusinessStore
 original = os.fsync
 def pause_after_directory_sync(fd):

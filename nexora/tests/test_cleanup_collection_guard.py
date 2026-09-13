@@ -3,7 +3,7 @@ import os
 from uuid import uuid4
 import pytest
 from psycopg import connect, sql
-from scripts.cleanup_migrated_demo import require_legacy_only
+from devtools.migrate.cleanup_migrated_demo import require_legacy_only
 
 
 @pytest.fixture

@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import pytest
 from test_collection_runner import context
 from app.bi.auth import issue_reader, authenticate_reader, BIUnauthorized
-from scripts import revoke_bi_reader as cli
+from app.commands import revoke_bi_reader as cli
 
 
 def test_targeted_revocation_preserves_other_readers(context, monkeypatch, capsys):

@@ -2,6 +2,8 @@
 
 ## En place
 
+- CLI unique `nexora` pour la collecte, le lac, la BI et les sauvegardes. Les générateurs, vérifications et conversions historiques sont accessibles uniquement avec l’image de développement via `nexora dev`. L’image de production exclut ces outils, les tests et pytest.
+
 - Menu mobile repliable avec page courante et déconnexion accessibles ; rendu des analyses contrôlé à 390 et 768 px.
 - Initialisation des composants terminée avant les requêtes concurrentes des workers, sans lecture métier ni calcul Spark.
 - Application Dash/Plotly servie par Gunicorn, image Python autonome sans FastAPI.

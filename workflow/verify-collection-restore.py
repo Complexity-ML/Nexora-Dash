@@ -17,7 +17,7 @@ def main():
     repo = Path(__file__).resolve().parents[1]
     sys.path.insert(0,str(repo/'nexora'))
     from app.collection.backup_archive import digest,seal_archive,verify_archive
-    prefix = [args.docker, 'compose']
+    prefix = [args.docker, 'compose', '-f', 'docker-compose.yml', '-f', 'docker-compose.dev.yml']
     source = 'restore_source_' + uuid4().hex
     target = 'restore_target_' + uuid4().hex
     def run(parts, **kwargs):
@@ -35,10 +35,10 @@ def main():
                     '-e', 'RESTORE_TEST_DATABASE=' + database, '-v', str(repo/'nexora')+':/app',
                     '-v', str(root)+':/restore-proof', 'dash', 'sh', '-c',
                     'export DATABASE_URL="${DATABASE_URL%/*}/$RESTORE_TEST_DATABASE"; ' + command])
-            backend(source, 'python -m alembic upgrade head && python -m scripts.verify_collection_restore seed --root /restore-proof')
+            backend(source, 'python -m alembic upgrade head && nexora dev verify restore seed --root /restore-proof')
             holder = subprocess.Popen(prefix + ['run', '--rm', '--no-deps', '-T',
                 '-e', 'RESTORE_TEST_DATABASE='+source, '-v', str(repo/'nexora')+':/app',
-                'dash', 'sh', '-c', 'export DATABASE_URL="${DATABASE_URL%/*}/$RESTORE_TEST_DATABASE"; exec python -m scripts.hold_backup_snapshot --namespace restore-proof/'],
+                'dash', 'sh', '-c', 'export DATABASE_URL="${DATABASE_URL%/*}/$RESTORE_TEST_DATABASE"; exec nexora backup hold --namespace restore-proof/'],
                 cwd=repo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=0)
             if not select.select([holder.stdout], [], [], 30)[0]:
                 raise RuntimeError('Backup snapshot holder did not become ready')
@@ -46,8 +46,8 @@ def main():
             snapshot = snapshot_metadata['snapshot']
             (root/'snapshot.json').write_text(json.dumps(snapshot_metadata))
             # Writes after this point must not leak into the exported database snapshot.
-            backend(source, 'python -m scripts.verify_collection_restore mutate --root /restore-proof')
-            backend(source, 'python -m scripts.verify_collection_restore copy --root /restore-proof')
+            backend(source, 'nexora dev verify restore mutate --root /restore-proof')
+            backend(source, 'nexora dev verify restore copy --root /restore-proof')
             with (root/'database.dump').open('wb') as stream:
                 db_tool('pg_dump', '-Fc', '--snapshot='+snapshot, source, stdout=stream)
             holder.communicate(input=b'close\n', timeout=30)
@@ -63,7 +63,7 @@ def main():
             verify_archive(root)
             with (root/'database.dump').open('rb') as stream:
                 db_tool('pg_restore', '--exit-on-error', '--no-owner', '-d', target, stdin=stream)
-            backend(target, 'python -m scripts.verify_collection_restore verify --root /restore-proof')
+            backend(target, 'nexora dev verify restore verify --root /restore-proof')
         finally:
             if holder is not None and holder.poll() is None:
                 holder.communicate(input=b'close\n', timeout=30)

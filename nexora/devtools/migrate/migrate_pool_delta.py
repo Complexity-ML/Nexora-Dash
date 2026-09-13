@@ -7,7 +7,7 @@ import pyarrow as pa
 from app.dependencies import get_pipeline
 from app.storage import pool_tables
 from app.storage.table_reader import read_table
-from scripts.migrate_enterprise_delta import verify
+from devtools.migrate.migrate_enterprise_delta import verify
 
 
 def main():

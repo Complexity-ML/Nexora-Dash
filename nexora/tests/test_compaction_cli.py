@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import pytest
 from test_collection_runner import context
 from test_collection_compaction import fragmented
-from scripts import compact_collection as cli
+from app.commands import compact_collection as cli
 from app.collection.reader import PublishedCollection
 
 

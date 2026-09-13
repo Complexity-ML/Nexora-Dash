@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 import pytest
-from scripts import initialize_demo as seed
+from devtools.demo import initialize_demo as seed
 
 
 def test_existing_generation_is_never_reinitialized(monkeypatch):

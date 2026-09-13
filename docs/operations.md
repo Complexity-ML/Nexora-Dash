@@ -4,13 +4,13 @@
 
 Dash est servi par Gunicorn depuis `app.main:server`. Les callbacks appellent les services Python et lisent les publications disponibles. Ils ne lancent ni collecte DIGIMON ni Spark. L’image contient les dépendances de traitement pour permettre des processus distincts à partir du même code.
 
-La collecte quotidienne utilise `scripts.collect_daily`. Elle exige `COLLECTION_ENABLED=true` et le contrat de disponibilité `ready_snapshot` du connecteur. Une heure fixe ne suffit pas à prouver que le relevé source est complet. Le service attend une disponibilité explicite et conserve les tentatives dans le journal.
+La collecte quotidienne utilise `nexora collect run`. Elle exige `COLLECTION_ENABLED=true` et le contrat de disponibilité `ready_snapshot` du connecteur. Une heure fixe ne suffit pas à prouver que le relevé source est complet. Le service attend une disponibilité explicite et conserve les tentatives dans le journal.
 
 ```sh
 # Une passe, après configuration du connecteur et du namespace de collecte
-python -m scripts.collect_daily --timezone Europe/Paris --once
+nexora collect run --timezone Europe/Paris --once
 # Service continu, à superviser indépendamment de Dash
-python -m scripts.collect_daily --timezone Europe/Paris
+nexora collect run --timezone Europe/Paris
 ```
 
 Le worker de reprise est disponible dans le profil Compose `recovery`. Il reprend les collectes enregistrées ; il ne remplace pas le collecteur quotidien.
@@ -33,7 +33,7 @@ La page Data Lake affiche les journées publiées et distingue le collecteur quo
 
 Les lectures d’une collection sont fixées à un manifeste validé. La publication atomique empêche de combiner des tables issues de lots différents. Les lecteurs hors mode collection utilisent la version Gold explicitement résolue.
 
-`python -m scripts.collection_status --help` décrit les bornes de contrôle. Utiliser `--require-daily-worker` et `--require-worker` lorsque ces services doivent être actifs. Le fonctionnement du worker de reprise ne prouve pas celui du collecteur quotidien.
+`nexora collect status --help` décrit les bornes de contrôle. Utiliser `--require-daily-worker` et `--require-worker` lorsque ces services doivent être actifs. Le fonctionnement du worker de reprise ne prouve pas celui du collecteur quotidien.
 
 Surveiller les journées attendues et publiées, les rejets, les reprises, les durées et la fraîcheur du Gold. Les journaux doivent contenir des identifiants de lots, jamais des secrets ou des payloads personnels complets.
 

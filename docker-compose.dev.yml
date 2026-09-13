@@ -1,0 +1,7 @@
+# Explicit opt-in for demo generators, tests and historical migrations.
+services:
+  dash:
+    build:
+      context: ./nexora
+      target: development
+    image: nexora-dash:dev

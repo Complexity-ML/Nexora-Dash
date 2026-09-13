@@ -4,7 +4,7 @@ import pytest
 from test_collection_runner import context
 from test_collection_daily import Source
 from app.collection.reader import PublishedCollection
-from scripts import collect_daily as cli
+from app.commands import collect_daily as cli
 
 
 def setup(monkeypatch, pipeline):

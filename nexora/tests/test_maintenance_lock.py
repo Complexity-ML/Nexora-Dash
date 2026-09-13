@@ -32,7 +32,7 @@ def test_deletion_blocks_backup_and_other_deletion_and_rollback_releases(isolate
 
 
 def test_legacy_cleanup_uses_same_guard(isolated):
-    from scripts.cleanup_migrated_demo import require_legacy_only
+    from devtools.migrate.cleanup_migrated_demo import require_legacy_only
     with connection(*isolated) as backup:
         protect_backup(backup)
         with connection(*isolated) as cleanup:

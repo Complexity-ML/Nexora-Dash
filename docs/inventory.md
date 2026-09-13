@@ -32,7 +32,7 @@ mais ne sont pas incluses dans un périmètre de pools auquel elles ne sont pas 
 ## Création de la démonstration
 
 ```sh
-docker compose exec dash python -m scripts.seed_enterprise_inventory
+docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm --no-deps dash nexora dev demo inventory
 ```
 
 Le script refuse les sources réelles. Il crée un namespace déterministe dépendant
@@ -45,7 +45,7 @@ dans le lac. Une modification des données d’inventaire exige une reconstructi
 de cet index avec le script ; la synchronisation des pools est indépendante.
 
 Le petit jeu de 120 machines reste disponible pour les tests et la génération
-initiale des pools. `scripts.seed_demo_inventory` enrichit les anciens lacs de ce
+initiale des pools. `nexora dev demo legacy-inventory` enrichit les anciens lacs de ce
 petit inventaire ; ce n’est pas le scénario d’entreprise.
 
 ## Contrat DIGIMON provisoire
@@ -105,7 +105,7 @@ financières doivent conserver l’unité du contrat et un coût renseigné.
 
 ### Analyse des installations persistées
 
-`nexora/scripts/analyze_enterprise_installations.py` lit les partitions quotidiennes
+`nexora/devtools/demo/analyze_enterprise_installations.py` lit les partitions quotidiennes
 actives et publie un agrégat Gold par couple machine–logiciel. Les usages de plusieurs
 personnes sur une machine sont réunis. Les journées absentes restent distinctes des
 journées observées sans usage. Le rapport n’est activé que si la génération courante
@@ -127,7 +127,7 @@ non classée. Les autres pools sont exclus des compteurs FlexLM.
 
 Le catalogue de sélection fusionne les pools historiques et les produits installés de la génération MinIO active. RHEL, Windows, Microsoft 365 et les composants sans pool sont sélectionnables. Le champ de sélection `pool_ids` conserve son nom pour compatibilité ; il transporte aussi les identifiants stables `software_id` des produits sans pool. Une capacité absente reste nulle.
 
-L’index associe les produits installés aux machines, à leurs sites et aux utilisateurs reliés par les observations. Les droits globaux ne sont pas automatiquement attribués à un espace partiel. Après évolution de la projection, `python -m scripts.reindex_enterprise_inventory` reconstruit l’index depuis la génération active et conserve son manifeste, ses partitions et ses résultats analytiques. Le basculement est refusé si la génération active a changé pendant la reconstruction.
+L’index associe les produits installés aux machines, à leurs sites et aux utilisateurs reliés par les observations. Les droits globaux ne sont pas automatiquement attribués à un espace partiel. Après évolution de la projection, `nexora dev demo reindex` reconstruit l’index depuis la génération active et conserve son manifeste, ses partitions et ses résultats analytiques. Le basculement est refusé si la génération active a changé pendant la reconstruction.
 
 ### Examiner les installations sans usage
 
@@ -165,7 +165,7 @@ les produits et leur parc, sans taux d’utilisation ni graphiques de capacité 
 ## Historique des systèmes, services et applications sans pool
 
 ```sh
-docker compose exec dash python -m scripts.seed_enterprise_product_usage
+docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm --no-deps dash nexora dev demo usage
 ```
 
 Cette extension de démonstration exige une source mock, une génération d’entreprise
@@ -198,7 +198,7 @@ Les dimensions, comptes, coûts et dossiers ne sont pas réécrits.
 
 Les 30 produits du scénario disposent d'un modèle fictif explicite : quantité par appareil, utilisateur nommé, capacité simultanée ou absence de décompte. Ces hypothèses ne décrivent pas les contrats des éditeurs. Un produit inconnu ne reçoit jamais automatiquement un modèle sans décompte.
 
-`python -m scripts.complete_demo_licenses` complète uniquement la dimension des licences de la démo active, après contrôle de concurrence ; les observations, coûts et dossiers ne sont pas réécrits. La page présente les unités séparément et regroupe les éventuelles informations manquantes sans répéter un état vide sur chaque ligne.
+`nexora dev demo licenses` complète uniquement la dimension des licences de la démo active, après contrôle de concurrence ; les observations, coûts et dossiers ne sont pas réécrits. La page présente les unités séparément et regroupe les éventuelles informations manquantes sans répéter un état vide sur chaque ligne.
 
 ### Provenance des licences fictives
 
@@ -260,7 +260,7 @@ peuvent donc occuper davantage de place que l’index actif. La commande suivant
 calcule un plan sans supprimer de données :
 
 ```sh
-docker compose exec dash python -m scripts.prune_inventory_index
+docker compose exec dash nexora lake prune-index
 ```
 
 L’option `--apply` supprime uniquement les lignes des anciennes projections SQL
@@ -278,3 +278,5 @@ concernée. Cette réécriture demande de l’espace temporaire et bloque l’ac
 à la table pendant son exécution ; prévoir une interruption des lectures.
 Ne pas supprimer un volume PostgreSQL ou MinIO utilisé par l’application pour
 réaliser cet entretien : ce serait une remise à zéro complète.
+
+Les commandes `nexora dev` exigent l’image de développement : construire celle-ci avec `docker compose -f docker-compose.yml -f docker-compose.dev.yml build dash`. Elles sont absentes de l’image de production.

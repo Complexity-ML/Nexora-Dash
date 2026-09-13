@@ -95,7 +95,7 @@ identité de révision cohérente, sans modifier silencieusement le Bronze archi
 
 ## Contrat de disponibilité pour la collecte quotidienne
 
-Le service `scripts.collect_daily` attend un adaptateur implémentant
+Le service `nexora collect run` attend un adaptateur implémentant
 `DailySource.ready_snapshot(day)` (`app/collection/daily.py`). Ce protocole est
 interne à Nexora : il ne présume ni une route REST ni les noms de champs DIGIMON.
 

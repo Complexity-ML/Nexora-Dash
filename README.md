@@ -43,7 +43,8 @@ Les secrets restent dans le fichier `.env` local, exclu de Git. Les comptes de d
 Sur une installation neuve, la connexion fonctionne avant la publication des analyses. Pour créer le petit jeu de référence (12 pools, un an d’historique fictif et son inventaire) :
 
 ```sh
-docker compose exec -e DEMO_TOOLS_ENABLED=true dash python -m scripts.initialize_demo
+docker compose -f docker-compose.yml -f docker-compose.dev.yml build dash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm --no-deps -e DEMO_TOOLS_ENABLED=true dash nexora dev demo initialize
 ```
 
 Cette commande prépare une génération séparée, valide les résultats puis les publie. Elle refuse un lac déjà alimenté et ne supprime pas de données. Actualiser ensuite la page Dash. Le scénario d’entreprise de 138 500 machines constitue un chargement distinct, plus volumineux ; il n’est pas lancé automatiquement.
@@ -67,3 +68,5 @@ Les tests nécessitent PostgreSQL et, pour les tests Spark, Java. Utiliser une b
 Migration en cours : les parcours métier ont été portés vers Dash et testés localement. La vérification complète des parcours et les finitions restent en cours. Les preuves de validation et les fonctions restant à terminer sont détaillées dans [le suivi de migration](docs/migration-dash.md).
 
 Les données affichées sont fictives. Le raccordement DIGIMON réel et la validation Power BI sur le réseau cible restent à effectuer. Les économies affichées sont des simulations, pas des gains réalisés.
+
+Les commandes d’exploitation sont décrites dans le [guide CLI](docs/cli.md).

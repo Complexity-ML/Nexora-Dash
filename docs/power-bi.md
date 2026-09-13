@@ -4,10 +4,10 @@ Nexora-Dash n’expose plus de routes REST BI. La préparation des publications 
 
 ## Compte S3 dédié
 
-Le générateur `scripts.bi_s3_policy` produit une politique de lecture limitée à un préfixe Gold choisi. Un administrateur doit créer le compte technique et lui attacher cette seule politique. Les identifiants administrateur MinIO ne doivent pas être fournis à la BI.
+Le générateur `nexora bi policy` produit une politique de lecture limitée à un préfixe Gold choisi. Un administrateur doit créer le compte technique et lui attacher cette seule politique. Les identifiants administrateur MinIO ne doivent pas être fournis à la BI.
 
 ```sh
-python -m scripts.bi_s3_policy --bucket nexora-lake --prefix demo/gold/bi > /tmp/nexora-bi-policy.json
+nexora bi policy --bucket nexora-lake --prefix demo/gold/bi > /tmp/nexora-bi-policy.json
 ```
 
 La commande ne crée ni compte, ni table, ni connexion Power BI. Les espaces Nexora ne filtrent pas automatiquement les lectures S3 : publier un préfixe correspondant à chaque audience autorisée. Les secrets restent dans le gestionnaire de secrets, pas dans Git ou les rapports.
@@ -36,9 +36,9 @@ Le service vérifie les métadonnées, le schéma et le nombre de lignes selon l
 
 ## Identifiants et restauration
 
-`scripts.issue_bi_reader` et `scripts.revoke_bi_reader` gèrent les lecteurs techniques. Les jetons sont distincts des secrets S3. Leur audience et namespace doivent rester minimaux. Ne pas exposer les jetons dans la ligne de commande de consommateurs ni dans les journaux.
+`nexora bi issue` et `nexora bi revoke` gèrent les lecteurs techniques. Les jetons sont distincts des secrets S3. Leur audience et namespace doivent rester minimaux. Ne pas exposer les jetons dans la ligne de commande de consommateurs ni dans les journaux.
 
-Après restauration d’une base, des révocations plus récentes peuvent manquer. Réconcilier ou renouveler les accès avant réouverture ; `scripts.revoke_restored_bi_readers` participe à ce contrôle. Une sauvegarde de données ne remplace pas une revue des accès restaurés.
+Après restauration d’une base, des révocations plus récentes peuvent manquer. Réconcilier ou renouveler les accès avant réouverture ; `nexora bi reconcile` participe à ce contrôle. Une sauvegarde de données ne remplace pas une revue des accès restaurés.
 
 ## Validation
 

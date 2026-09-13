@@ -77,7 +77,7 @@ def test_cli_handles_real_signals_without_abandoning_current_pass(signal_name, p
 import sys
 import time
 from types import SimpleNamespace
-from scripts import recover_collections as cli
+from app.commands import recover_collections as cli
 phase = sys.argv[-1]
 cli.get_settings = lambda: SimpleNamespace(collection_enabled=True)
 cli.get_pipeline = lambda: SimpleNamespace(collection_journal=SimpleNamespace(store=None), store=SimpleNamespace(prefix='test'), collection_source='test', collection_scope='test')

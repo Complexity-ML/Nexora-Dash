@@ -1,5 +1,5 @@
 import pytest
-from scripts.bi_s3_policy import policy
+from app.commands.bi_s3_policy import policy
 
 
 def test_reader_can_only_list_and_read_published_gold():

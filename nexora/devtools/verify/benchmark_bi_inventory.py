@@ -6,7 +6,7 @@ from time import perf_counter
 from app.config import get_settings
 from app.business.store import BusinessStore
 from app.bi.inventory_snapshot import inventory_counts
-from scripts.benchmark_local_reads import distribution
+from devtools.verify.benchmark_local_reads import distribution
 
 
 def benchmark(repeats, concurrency):

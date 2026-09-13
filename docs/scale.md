@@ -88,7 +88,7 @@ produits des machines à chaque requête. Les produits restent identifiés par l
 `software_id` ; les périmètres partiels filtrent les identifiants de pool ou de
 produit. Les index anciens sans résumé conservent le calcul de secours.
 
-Après migration, `python -m scripts.rebuild_software_summary` depuis `nexora/`
+Après migration, `nexora lake rebuild-summary` depuis `nexora/`
 reconstruit le résumé de l’index courant sans changer son pointeur. Les prochains
 index produisent automatiquement leur résumé.
 

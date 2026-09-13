@@ -214,7 +214,7 @@ courante. Les tests activent ce parcours dans des espaces isolés uniquement.
 
 ### Import de l’historique existant dans le journal
 
-`python -m scripts.import_collection_history` (depuis `nexora/`) prépare une publication à partir des
+`nexora lake import` (depuis `nexora/`) prépare une publication à partir des
 versions Delta et de l’index existants. Il ne copie pas les observations et ne change
 aucun pointeur actif pendant cette préparation. Le dernier stock doit correspondre
 à un relevé Bronze archivé ; les quantités ne sont pas déduites des installations.
@@ -263,7 +263,7 @@ qui restent à définir avec son contrat réel.
 
 ### Reprise sans disponibilité de DIGIMON
 
-`python -m scripts.recover_collections --limit 10` exécute une passe bornée sur
+`nexora collect recover --limit 10` exécute une passe bornée sur
 les runs rejouables et les baux expirés du seul périmètre configuré. La commande
 nécessite le mode journalisé. Elle ne contacte pas la source : le payload Bronze,
 son empreinte et les versions de transformation permettent de reprendre le même
@@ -283,7 +283,7 @@ au contrat source. Aucun ordonnanceur n’est activé sur la démonstration à c
 
 ### Diagnostic des journées et des traitements
 
-`python -m scripts.collection_status --from AAAA-MM-JJ --through AAAA-MM-JJ`
+`nexora collect status --from AAAA-MM-JJ --through AAAA-MM-JJ`
 compare une fenêtre attendue explicite aux journées du manifeste publié. La borne
 finale doit correspondre à une journée dont les données devraient déjà être
 disponibles selon le contrat source ; la commande ne devine pas cette échéance.
@@ -380,7 +380,7 @@ Le stockage de secours externe et les exercices à l’échelle du parc restent
 
 ### Rotation des lots en attente de reprise
 
-Chaque passe de `scripts.recover_collections` examine d’abord les lots jamais
+Chaque passe de `nexora collect recover` examine d’abord les lots jamais
 examinés, puis les moins récemment examinés. La date d’examen est persistée dans
 PostgreSQL avant la lecture de Bronze : un lot ancien sans métadonnées de reprise,
 ou dont la configuration a changé, ne monopolise donc pas indéfiniment le lot
@@ -400,7 +400,7 @@ périodique de la reprise et la temporisation progressive des échecs techniques
 Après migration et activation validée du mode journalisé, lancer depuis `nexora/` :
 
 ```sh
-python -m scripts.recover_collections --watch --limit 10 --interval 300 --max-interval 3600
+nexora collect recover --watch --limit 10 --interval 300 --max-interval 3600
 ```
 
 Sans `--watch`, la commande conserve sa passe unique. En mode périodique, elle
@@ -446,7 +446,7 @@ ne contiennent ni payload, ni identifiants de connexion, ni exception brute.
 
 
 Pour superviser un déploiement où la reprise périodique est attendue, ajouter
-`--require-worker` à `python -m scripts.collection_status --from … --through …`.
+`--require-worker` à `nexora collect status --from … --through …`.
 La commande sort avec le code 1 si aucun worker ne répond aux contrôles, y compris
 après un arrêt propre. Sans cette option, l’absence de worker n’est pas une anomalie.
 Les instances actives silencieuses et les passes en attente dépassant leur date
@@ -503,7 +503,7 @@ les procédures de basculement de production restent à valider.
 
 ### Inventaire des références à préserver
 
-`python -m scripts.plan_collection_retention` parcourt les checkpoints courants,
+`nexora lake retention` parcourt les checkpoints courants,
 les checkpoints archivés après changement de référence et les têtes publiées de
 tous les runs du préfixe actif, sans exclure les runs rejetés ou non publiés.
 La lecture des racines utilise un snapshot PostgreSQL cohérent ; leurs manifestes
@@ -759,8 +759,8 @@ est couverte séparément par `workflow/verify-collection-restore.py`.
 Dans un environnement où la collecte journalisée a déjà été validée et activée :
 
 ```sh
-python -m scripts.compact_collection --day "$JOUR_A_COMPACTER"
-python -m scripts.compact_collection --day "$JOUR_A_COMPACTER" --target-mib 128 --apply
+nexora lake compact --day "$JOUR_A_COMPACTER"
+nexora lake compact --day "$JOUR_A_COMPACTER" --target-mib 128 --apply
 ```
 
 La première commande ne modifie ni table ni publication : elle affiche la
@@ -805,7 +805,7 @@ leur réconciliation reste nécessaire avant réouverture des accès restaurés.
 
 ### Point d’entrée du collecteur quotidien
 
-`python -m scripts.collect_daily --timezone Europe/Paris --once` effectue un
+`nexora collect run --timezone Europe/Paris --once` effectue un
 passage supervisé ; omettre `--once` répète les passages. `--lookback-days`,
 `--history-start`, `--catchup-limit`, `--interval` et `--max-interval` règlent la
 fenêtre récente, le rattrapage et les délais. SIGTERM/SIGINT demandent l’arrêt entre
@@ -851,7 +851,7 @@ une charge prolongée, Power BI ou le réseau cible.
 
 ### Vérification d’un import préparé
 
-`python -m scripts.import_collection_history --verify-artifact <fichier.json>`
+`nexora lake import --verify-artifact <fichier.json>`
 revérifie un artefact préparé sans activer de publication et sans prendre de bail.
 Le contrôle compare les références du parc, les comptages des versions Delta, le
 manifeste d’inventaire et les paramètres d’analyse. Un changement des seuils ou de

@@ -971,7 +971,7 @@ def test_product_usage_generation_preserves_legacy_report_and_publishes_after_va
     import pyarrow.parquet as pq
     from app.business.inventory_index import publish_index
     from app.models.inventory import InventorySnapshot
-    from scripts import seed_enterprise_product_usage as producer
+    from devtools.demo import seed_enterprise_product_usage as producer
     _,_,_,store=business
     objects={}
     class Lake:

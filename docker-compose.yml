@@ -64,7 +64,7 @@ services:
     build: ./nexora
     image: nexora-dash:local
     environment: *lake-environment
-    command: [python, -m, scripts.collect_daily, --timezone, '${BUSINESS_TIMEZONE:-Europe/Paris}', --interval, '300', --max-interval, '3600']
+    command: [nexora, collect, run, --timezone, '${BUSINESS_TIMEZONE:-Europe/Paris}', --interval, '300', --max-interval, '3600']
     init: true
     restart: on-failure:5
     stop_grace_period: 5m
@@ -76,7 +76,7 @@ services:
     build: ./nexora
     image: nexora-dash:local
     environment: *lake-environment
-    command: [python, -m, scripts.recover_collections, --watch, --limit, '10', --interval, '300', --max-interval, '3600']
+    command: [nexora, collect, recover, --watch, --limit, '10', --interval, '300', --max-interval, '3600']
     init: true
     restart: on-failure:5
     stop_grace_period: 5m

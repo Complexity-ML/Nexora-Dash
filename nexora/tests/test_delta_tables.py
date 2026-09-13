@@ -68,7 +68,7 @@ def test_inventory_nullable_schema_and_migration(tmp_path):
     from io import BytesIO
     from types import SimpleNamespace
     import pyarrow.parquet as pq
-    from scripts.migrate_enterprise_delta import migrate
+    from devtools.migrate.migrate_enterprise_delta import migrate
     objects = {}
     def parquet(key, rows):
         sink = BytesIO()
