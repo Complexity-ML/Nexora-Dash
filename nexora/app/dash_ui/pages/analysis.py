@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from app.dash_ui.charts import usage_heatmap, installation_activity, capacity_pressure, opportunity_ranking
+from app.dash_ui.charts import usage_heatmap, installation_activity, capacity_pressure, opportunity_ranking, usage_distribution, usage_duration, capacity_history
 from dash import html, dcc
 import plotly.graph_objects as go
 from app.dash_ui.components import header, stats, card, link, table, number, money, empty, filter_control, plot, daily_figure, field, action, pager
@@ -90,7 +90,10 @@ def annual(ctx,query):
                ('Évolution',f'{delta:+.1f} points' if delta is not None else '—','Utilisation inchangée' if delta==0 else 'Écart entre les deux périodes')]),
         card(html.H2('Usage au fil des journées'),html.Small('Une cellule vide signifie une journée absente ou une capacité non calculable. Cliquez pour ouvrir le produit.'),plot(usage_heatmap(trends),{'type':'insight-chart','key':'usage'})),
         card(html.H2('Profil mensuel'),plot(fig)),
-        card(html.H2('Changements de capacité'),table([('name','Produit'),('day','Constat'),('before','Avant'),('after','Après')],changes))],className='stack')
+        card(html.H2('Variabilité des usages'),html.Small('Médiane, dispersion et extrêmes des journées observées par produit.'),plot(usage_distribution(trends),{'type':'insight-chart','key':'distribution'})),
+        card(html.H2('Pics ponctuels ou usage durable ?'),html.Small('Les courbes distinguent les pics rares des niveaux d’usage soutenus. Cliquez sur la légende pour isoler un produit.'),plot(usage_duration(trends),{'type':'insight-chart','key':'duration'})),
+        card(html.H2('Évolution relative des capacités'),html.Small('Chaque produit part de sa première capacité positive, ramenée à 100. Les unités ne sont pas additionnées.'),plot(capacity_history(trends),{'type':'insight-chart','key':'capacity-history'})),
+        html.Details([html.Summary('Voir les changements de capacité en détail'),table([('name','Produit'),('day','Constat'),('before','Avant'),('after','Après')],changes)],className='card')],className='stack')
 
 
 def pools(ctx,query):

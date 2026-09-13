@@ -57,6 +57,18 @@ services:
     depends_on:
       minio: {condition: service_healthy}
       postgres: {condition: service_healthy}
+  daily-collector:
+    profiles: [collection]
+    build: ./nexora
+    image: nexora-dash:local
+    environment: *lake-environment
+    command: [python, -m, scripts.collect_daily, --timezone, '${BUSINESS_TIMEZONE:-Europe/Paris}', --interval, '300', --max-interval, '3600']
+    init: true
+    restart: on-failure:5
+    stop_grace_period: 5m
+    depends_on:
+      postgres: {condition: service_healthy}
+      minio: {condition: service_healthy}
   recovery-worker:
     profiles: [recovery]
     build: ./nexora

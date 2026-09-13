@@ -51,3 +51,46 @@ def opportunity_ranking(candidates):
         hovertemplate='%{y}<br>%{x} unités à examiner<extra></extra>'))
     fig.update_yaxes(autorange='reversed',automargin=True)
     return fig
+
+
+def usage_distribution(trends):
+    """Observed daily ratios only: missing data is never counted as inactivity."""
+    fig=go.Figure()
+    for t in trends:
+        samples=[100*r['used']/r['capacity'] for r in t.daily if r['capacity']>0]
+        if samples:
+            fig.add_trace(go.Box(x=samples,name=t.software_name,orientation='h',boxpoints=False,
+                customdata=[route('software',pool=t.license_pool_id)]*len(samples),
+                hovertemplate='%{x:.1f} %<extra>%{fullData.name}</extra>'))
+    fig.update_xaxes(title='Utilisation journalière (%)',rangemode='tozero')
+    fig.update_yaxes(autorange='reversed',automargin=True)
+    fig.update_layout(showlegend=False,height=max(340,38*len(trends)))
+    return fig
+
+
+def usage_duration(trends):
+    fig=go.Figure()
+    for t in trends:
+        samples=sorted([100*r['used']/r['capacity'] for r in t.daily if r['capacity']>0],reverse=True)
+        if samples:
+            fig.add_scatter(x=[100*(i+1)/len(samples) for i in range(len(samples))],y=samples,
+                name=t.software_name,mode='lines',customdata=[route('software',pool=t.license_pool_id)]*len(samples),
+                hovertemplate='%{y:.1f} % d’utilisation atteints ou dépassés<br>sur %{x:.1f} % des jours observés<extra>%{fullData.name}</extra>')
+    fig.update_xaxes(title='Part des journées observées (%)',range=[0,100])
+    fig.update_yaxes(title='Utilisation (%)',rangemode='tozero')
+    return fig
+
+
+def capacity_history(trends):
+    """Normalize each pool separately; heterogeneous capacities are never summed."""
+    fig=go.Figure()
+    for t in trends:
+        rows=sorted(t.daily,key=lambda r:str(r['date']))
+        reference=next((r['capacity'] for r in rows if r['capacity']>0),None)
+        if reference:
+            fig.add_scatter(x=[r['date'] for r in rows],y=[100*r['capacity']/reference for r in rows],
+                name=t.software_name,mode='lines',line_shape='hv',
+                customdata=[route('software',pool=t.license_pool_id)]*len(rows),
+                hovertemplate='%{x}<br>Indice de capacité : %{y:.1f}<extra>%{fullData.name}</extra>')
+    fig.update_yaxes(title='Indice · première capacité positive = 100',rangemode='tozero')
+    return fig

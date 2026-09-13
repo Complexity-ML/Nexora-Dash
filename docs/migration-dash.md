@@ -11,6 +11,10 @@
 - Export HTML imprimable d’un dossier via Dash avec vérification d’accès au téléchargement.
 - Catalogue consultable sans analyses Gold ; détails des licences chargés à l’ouverture et liste paginée.
 
+- Périmètre logiciel en cartes cochables avec recherche et actions groupées, sans menu géant.
+- Analyse annuelle : dispersion des usages, durée des pics et évolution relative des capacités.
+- Supervision des journées publiées et des processus de collecte et de reprise ; profil Docker `collection` autonome.
+
 ## Preuves de validation
 
 Les tests `test_dash.py` exercent les callbacks, sessions, refus d’accès, notes, formulaires membres, navigation Plotly et export de dossier. `test_dash_charts.py` contrôle les journées manquantes et les populations non additives. `test_dash_software.py` couvre le catalogue sans Gold et la pagination des licences. `test_published_analytics.py` vérifie que la lecture ne lance ni collecte ni calcul.
@@ -19,9 +23,9 @@ Les tests `test_dash.py` exercent les callbacks, sessions, refus d’accès, not
 
 ## À terminer avant clôture
 
-- Revue complète des anciens guides d’exploitation et de Power BI : certains décrivent encore l’ancien transport REST.
+- Vérification finale des guides et commandes sur une installation neuve ; les guides d’exploitation, de BI et de parcours décrivent désormais Dash et les services Python.
 - Vérification des exports tabulaires et autres fonctions de confort de l’ancienne interface.
-- Compléter les vues économiques interactives et les vues de suivi des collectes.
+- Compléter les vues économiques interactives. Le suivi des collectes est désormais accessible aux opérateurs dans la page Data Lake.
 - Vérifier tous les parcours métier et graphiques dans le navigateur, avec plusieurs largeurs et des espaces à périmètre partiel.
 - Vérifier visuellement les états sans espace ou sans publication ; les parcours sont désormais couverts par les tests de callbacks et de pages.
 - Valider le démarrage d’une installation neuve avec ses données de démonstration.

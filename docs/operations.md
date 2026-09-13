@@ -1,64 +1,58 @@
-# Exploitation et industrialisation
+# Exploitation Nexora-Dash
 
-## État du MVP
+## Processus indépendants
 
-- FastAPI et Spark partagent actuellement le même conteneur backend.
-- Spark s'exécute en `local[*]` dans la démo.
-- MinIO fournit l'API S3 locale.
-- delta-rs résout une version Delta et transmet les capacités à Spark via Arrow.
-- Le résultat Gold courant est écrit dans la table Delta `gold/analytics/latest`.
+Dash est servi par Gunicorn depuis `app.main:server`. Les callbacks appellent les services Python et lisent les publications disponibles. Ils ne lancent ni collecte DIGIMON ni Spark. L’image contient les dépendances de traitement pour permettre des processus distincts à partir du même code.
 
-Ces choix réduisent le coût de démarrage mais les interfaces (`DigimonConnector`, `ObjectStore`, modèles canoniques) permettent une évolution indépendante.
+La collecte quotidienne utilise `scripts.collect_daily`. Elle exige `COLLECTION_ENABLED=true` et le contrat de disponibilité `ready_snapshot` du connecteur. Une heure fixe ne suffit pas à prouver que le relevé source est complet. Le service attend une disponibilité explicite et conserve les tentatives dans le journal.
 
-## Trajectoire de production
+```sh
+# Une passe, après configuration du connecteur et du namespace de collecte
+python -m scripts.collect_daily --timezone Europe/Paris --once
+# Service continu, à superviser indépendamment de Dash
+python -m scripts.collect_daily --timezone Europe/Paris
+```
 
-1. Remplacer les identifiants MinIO locaux par un gestionnaire de secrets.
-2. Utiliser un bucket et des préfixes par environnement avec chiffrement, versionnement et politique de rétention.
-3. Exécuter les synchronisations via un ordonnanceur plutôt que via le seul endpoint manuel.
-4. Déployer Spark sur le cluster cible et configurer S3A pour lire Silver directement.
-5. Versionner les datasets Gold et publier atomiquement un pointeur vers la dernière version valide.
-6. Mettre en cache ou servir Gold sans relancer Spark à chaque lecture API.
-7. Ajouter authentification, autorisation par entité, rate limiting et journal d'audit à FastAPI.
-8. Générer le client TypeScript depuis OpenAPI dans la CI.
+Le worker de reprise est disponible dans le profil Compose `recovery`. Il reprend les collectes enregistrées ; il ne remplace pas le collecteur quotidien.
 
-## Sécurité
+```sh
+docker compose --profile recovery up -d recovery-worker
+```
 
-- Restreindre `CORS_ORIGINS` aux origines HTTPS de production.
-- Ne jamais utiliser les credentials `minioadmin` hors poste de développement.
-- Placer DIGIMON et S3 sur un réseau serveur non accessible au navigateur.
-- Filtrer ou chiffrer les identifiants utilisateur et machine selon la politique de données.
-- Définir une durée de rétention Bronze, potentiellement plus sensible que Silver et Gold.
-- Protéger `POST /sync` par une permission opérationnelle.
+Ne pas activer le mode réel tant que le contrat DIGIMON, les identifiants, le périmètre et les permissions n’ont pas été validés. La démonstration locale reste en mode fictif.
 
-## Observabilité recommandée
+Le profil `collection` démarre le collecteur supervisé après configuration et activation de la collecte :
 
-Mesures minimales :
+```sh
+docker compose --profile collection up -d daily-collector
+```
 
-- date et résultat de la dernière synchronisation ;
-- nombre de lignes Bronze/Silver écrites ;
-- durée, volume lu et résultat du job Spark ;
-- fraîcheur du dernier dataset Gold ;
-- erreurs DIGIMON, S3 et Spark par catégorie ;
-- nombre de pools rejetés lors du mapping canonique.
+La page Data Lake affiche les journées publiées et distingue le collecteur quotidien du processus de reprise. Elle est réservée aux opérateurs de source. Une nouvelle version de l’interface déclenche une invitation à recharger la page, sans effacer automatiquement les formulaires en cours.
 
-Les logs doivent contenir un identifiant de snapshot, jamais un credential ni un payload utilisateur complet.
+## Publications et supervision
 
-## Résilience et qualité
+Les lectures d’une collection sont fixées à un manifeste validé. La publication atomique empêche de combiner des tables issues de lots différents. Les lecteurs hors mode collection utilisent la version Gold explicitement résolue.
 
-- Rendre les écritures idempotentes avec un identifiant de snapshot source stable lorsque DIGIMON le fournit.
-- Contrôler le schéma, les valeurs négatives, doublons et timestamps futurs avant Silver.
-- Ne publier Gold qu'après validation complète du job.
-- Tester les restaurations et la lecture de partitions anciennes.
-- Ajouter des seuils d'alerte sur la fraîcheur, sans confondre absence de données et consommation nulle.
+`python -m scripts.collection_status --help` décrit les bornes de contrôle. Utiliser `--require-daily-worker` et `--require-worker` lorsque ces services doivent être actifs. Le fonctionnement du worker de reprise ne prouve pas celui du collecteur quotidien.
 
-## Limites analytiques
+Surveiller les journées attendues et publiées, les rejets, les reprises, les durées et la fraîcheur du Gold. Les journaux doivent contenir des identifiants de lots, jamais des secrets ou des payloads personnels complets.
 
-La saturation actuelle est une projection linéaire déterministe, non un modèle prédictif. Le potentiel de récupération dépend d'un seuil et d'une réserve configurables. Avant tout usage contractuel, intégrer les coûts, règles éditeur, saisonnalité, réservations, profils d'accès et validations métier.
+## Accès
 
-## Migration et test à vide
+PostgreSQL conserve les utilisateurs, sessions, espaces, rôles, coûts, dossiers et notes. Les services vérifient les accès à chaque commande ou export. Le stockage S3 reste côté serveur.
 
-`python -m scripts.verify_fresh_delta` génère un an de démo dans un préfixe MinIO vide et vérifie les analyses, la persistance Gold et l’absence de fichiers Silver historiques. Il ne change pas le jeu actif.
+Gunicorn écoute sur le port 8050. En environnement distant, terminer TLS au reverse proxy, conserver une origine cohérente et activer `DASH_COOKIE_SECURE=true`. Les callbacks refusent les commandes d’une autre origine. La clé de session est persistée dans `dash-session` ; ne pas remplacer ce volume lors d’une simple mise à jour.
 
-`python -m scripts.migrate_enterprise_delta` prépare les tables de l’inventaire existant et compare leur contenu sans les activer. `--resume-root` reprend un préfixe de migration interrompu. Les producteurs doivent être arrêtés pour la bascule finale.
+Les comptes démo et secrets de développement ne doivent pas servir à un déploiement sur données réelles. Garder PostgreSQL et MinIO hors d’accès du navigateur. Les autorisations S3 BI sont distinctes des espaces applicatifs.
 
-La politique de compaction, de schéma et de rétention est décrite dans [Delta Lake](delta-lake.md). Aucune purge automatique n’est activée.
+## Sauvegarde, restauration et maintenance
+
+Conserver ensemble les sauvegardes PostgreSQL, objets et références des publications. L’exercice `workflow/verify-collection-restore.py` vérifie une restauration isolée ; consulter son aide et [l’industrialisation](industrialisation.md) avant exécution.
+
+Après restauration, réconcilier les accès techniques et les révocations avant réouverture. Les migrations qui effacent des données ou protègent la traçabilité ne doivent pas annoncer un rollback réussi lorsqu’il serait irréversible.
+
+Compaction et rétention sont des opérations distinctes de la navigation. [Delta Lake](delta-lake.md) décrit les verrous et la protection des références. Ne pas purger des fichiers encore nécessaires à une publication ou sauvegarde. Aucune purge ne découle de l’affichage des pages.
+
+## Limites
+
+La projection de saturation est indicative. Une installation inactive ne prouve pas un droit libérable. Les simulations économiques dépendent des unités, coûts et contrats. La démonstration ne valide ni le réseau cible, ni les données réelles DIGIMON, ni Power BI.

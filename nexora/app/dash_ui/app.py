@@ -1,5 +1,6 @@
 """Dash web entry point. Calls Python services, never Nexora REST endpoints."""
 import logging
+import hashlib
 import os
 import secrets
 from pathlib import Path
@@ -10,7 +11,7 @@ from flask import Flask, request, session, abort
 from pydantic import ValidationError
 from app.business.errors import BusinessError
 from app.dash_ui.context import current_context
-from app.dash_ui.components import action, field, empty, route
+from app.dash_ui.components import action, field, empty, route, DROPDOWN_LABELS
 from app.dash_ui.actions import execute
 from app.dash_ui.pages import overview, inventory, software, analysis, cases, settings, lake, explore
 
@@ -65,6 +66,13 @@ def create_app(*, testing=False, store=None):
     if store is not None:
         if not testing: raise ValueError('Store injection is reserved for tests')
         server.config['NEXORA_BUSINESS_STORE']=store
+    ui_root=Path(__file__).parent
+    digest=hashlib.sha256()
+    for source in sorted(ui_root.rglob('*')):
+        if source.suffix in ('.py','.css','.js'):
+            digest.update(source.relative_to(ui_root).as_posix().encode())
+            digest.update(source.read_bytes())
+    ui_version=digest.hexdigest()[:16]
     app=Dash(__name__,server=server,assets_folder=str(Path(__file__).parent/'assets'),
         suppress_callback_exceptions=True,title='Nexora — Analyse du parc',update_title=None)
 
@@ -80,12 +88,21 @@ def create_app(*, testing=False, store=None):
     def response_headers(response):
         response.headers['X-Content-Type-Options']='nosniff'
         response.headers['Referrer-Policy']='same-origin'
-        if not request.path.startswith('/assets/'):
-            response.headers['Cache-Control']='no-store'
+        response.headers['Cache-Control']='no-store'
         return response
 
     app.layout=html.Div([dcc.Location(id='location',refresh=False),dcc.Store(id='revision',data=0),
-        dcc.Download(id='download'),html.Div(id='shell'),html.Div(id='message',role='status',className='toast')])
+        dcc.Download(id='download'),dcc.Store(id='ui-version',data=ui_version),
+        dcc.Interval(id='ui-version-check',interval=30000),html.Div(id='ui-update'),html.Div(id='shell'),html.Div(id='message',role='status',className='toast')])
+
+    @app.callback(Output('ui-update','children'),Input('ui-version-check','n_intervals'),State('ui-version','data'))
+    def check_ui_version(_tick,loaded):
+        if loaded==ui_version:return None
+        return html.Div([html.Span('Une nouvelle version est disponible. Enregistrez vos modifications avant de recharger.'),
+            html.Button('Recharger la page',id='reload-ui',n_clicks=0,className='button')],className='update-banner',role='status')
+
+    app.clientside_callback("""function(n) { if(n) window.location.reload(); return window.dash_clientside.no_update; }""",
+        Output('ui-version','data'),Input('reload-ui','n_clicks'),prevent_initial_call=True)
 
     @app.callback(Output('shell','children'),Input('location','hash'),Input('revision','data'))
     def render(location,revision):
@@ -113,9 +130,9 @@ def create_app(*, testing=False, store=None):
         for key,(label,_) in PAGES.items():
             nav.append(dcc.Link(label,href=route(key),className='nav-item active' if key==page else 'nav-item'))
         return html.Div([
-            html.Aside([html.Div([html.Strong('nexora'),html.Span('SAM',className='badge')],className='brand'),
+            html.Aside([html.Div([html.Div([html.Span(),html.Span(),html.Span()],className='logo-mark',**{'aria-hidden':'true'}),html.Strong('nexora'),html.Span('SAM',className='badge')],className='brand'),
                 html.Label('ESPACE DE TRAVAIL',className='eyebrow'),
-                dcc.Dropdown(id='workspace-picker',options=[{'label':w['name'],'value':w['id']} for w in context.spaces],value=context.wid,clearable=False),
+                dcc.Dropdown(labels=DROPDOWN_LABELS,id='workspace-picker',options=[{'label':w['name'],'value':w['id']} for w in context.spaces],value=context.wid,clearable=False),
                 html.Nav(nav),html.Div([html.Strong(context.user['name']),action('Se déconnecter','logout')],className='sidebar-footer')],className='sidebar'),
             html.Main([html.Div([html.Span('DÉMONSTRATION · Données fictives' if os.environ.get('SAM_DATA_SOURCE','mock')=='mock' else 'Source : DIGIMON'),
                                  action('Actualiser','refresh')],className='topbar'),
@@ -181,6 +198,30 @@ def create_app(*, testing=False, store=None):
         page,_=parse_location(target)
         if page not in ('software','savings','licenses','explore'):raise PreventUpdate
         return target
+    @app.callback(Output('portfolio-selection','style'),Output('portfolio-all-note','style'),
+        Input({'type':'field','key':'portfolio-mode'},'value'))
+    def portfolio_mode(mode):
+        return ({'display':'none'}, {}) if mode=='all' else ({}, {'display':'none'})
+
+    @app.callback(Output({'type':'field','key':'portfolio-products'},'options'),Output('portfolio-search-count','children'),
+        Input('portfolio-search','value'),State('portfolio-catalog','data'))
+    def portfolio_search(search,choices):
+        rows=[p for p in (choices or []) if (search or '').casefold() in p['label'].casefold()]
+        return rows,f'{len(rows)} produits affichés'
+
+    @app.callback(Output('portfolio-count','children'),Input({'type':'field','key':'portfolio-products'},'value'))
+    def portfolio_count(selected):
+        return f'{len(selected or [])} sélectionnés'
+
+    @app.callback(Output({'type':'field','key':'portfolio-products'},'value'),
+        Input('portfolio-select','n_clicks'),Input('portfolio-clear','n_clicks'),
+        State({'type':'field','key':'portfolio-products'},'options'),State({'type':'field','key':'portfolio-products'},'value'),prevent_initial_call=True)
+    def portfolio_selection(select,clear,visible,selected):
+        if not select and not clear:raise PreventUpdate
+        keys={p['value'] for p in (visible or []) if not p.get('disabled')}
+        current=set(selected or [])
+        return sorted(current|keys if trigger.triggered_id=='portfolio-select' else current-keys)
+
     return app
 
 

@@ -32,7 +32,7 @@ mais ne sont pas incluses dans un périmètre de pools auquel elles ne sont pas 
 ## Création de la démonstration
 
 ```sh
-docker compose exec backend python -m scripts.seed_enterprise_inventory
+docker compose exec dash python -m scripts.seed_enterprise_inventory
 ```
 
 Le script refuse les sources réelles. Il crée un namespace déterministe dépendant
@@ -83,7 +83,7 @@ La génération enterprise-v6 couvre 180 sites fictifs : 34 SAE, 26 SED, 18 SHE,
 
 ## Architecture cible
 
-Agents → Beacon général → backend DIGIMON Node.js → API REST DIGIMON → backend Nexora Python → MinIO et analyses. Le frontend Nexora rejoint le frontend Vite/React DIGIMON sur une route dédiée, à convenir avec son développeur. Le prototype reste exécutable seul pour la démonstration. Aucun accès direct au Beacon depuis Nexora.
+Agents → Beacon général → backend DIGIMON Node.js → API REST DIGIMON → collecteur Nexora Python → MinIO et analyses. L’interface Dash pourra être exposée sous une route de DIGIMON, avec le reverse proxy et l’authentification à convenir avec son développeur. Le prototype reste exécutable seul pour la démonstration. Aucun accès direct au Beacon depuis Nexora.
 
 Les 16 500 prestataires fictifs (hypothèse de 15 % des salariés) disposent chacun d’un portable dédié et de logiciels installés liés à leurs observations. Les salariés utilisent 100 000 postes, dont certains partagés. Le modèle distingue `employment_type` et `form_factor`.
 
@@ -165,7 +165,7 @@ les produits et leur parc, sans taux d’utilisation ni graphiques de capacité 
 ## Historique des systèmes, services et applications sans pool
 
 ```sh
-docker compose exec backend python -m scripts.seed_enterprise_product_usage
+docker compose exec dash python -m scripts.seed_enterprise_product_usage
 ```
 
 Cette extension de démonstration exige une source mock, une génération d’entreprise

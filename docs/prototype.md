@@ -1,95 +1,47 @@
-# Parcours de la démonstration SAM
+# Parcours de la démonstration Nexora-Dash
 
-Lancer la stack suivant le [workflow](../WORKFLOW.md), puis ouvrir
-http://localhost:5173. Les routes à fragment permettent les liens directs et le
-rechargement. Les données de licences sont explicitement fictives ; les actions
-métier sont persistées sur le serveur.
+Suivre le [guide de développement](development.md), puis ouvrir http://localhost:8050. Les données du scénario sont fictives ; les modifications métier sont persistées dans PostgreSQL.
 
-| Route | Parcours |
+| Navigation | Parcours |
 | --- | --- |
-| `#/overview` | Synthèse du périmètre, graphique, notifications |
-| `#/portfolio` | Sélection des logiciels pris en charge par l’espace |
-| `#/software` | Catalogue filtré et recherche |
-| `#/software/:poolId` | Usage, capacité, risque et ouverture d’un dossier |
-| `#/analysis` | Comparaison de périodes, variations mensuelles et capacités |
-| `#/licenses` | Stock fourni par la source |
-| `#/flexlm` | Risques et projections par pool |
-| `#/savings` | Coûts partagés et estimations annuelles |
-| `#/cases` | Dossiers, assignations, commentaires et justificatifs |
-| `#/sources` | Source active et collecte |
-| `#/pipelines` | État des étapes et recalcul |
-| `#/lake` | Inventaire des objets Bronze, Silver et Gold |
-| `#/settings` | Profil, membres, création de comptes et seuils d’analyse |
-| `#/help` | Guide et limites des analyses |
+| `#/overview` | Compteurs du parc, répartitions et historique des capacités |
+| `#/explore` | Croisements des dimensions, sélection graphique et détail paginé |
+| `#/inventory` | Machines, utilisateurs et sites ; graphiques filtrés et fiches |
+| `#/software` | Catalogue des applications, systèmes et services |
+| `#/software?product=identifiant` | Fiche d’un produit inventorié |
+| `#/annual` | Comparaison de périodes, carte de chaleur et profil mensuel |
+| `#/licenses` | Quantités reçues, comparaison par unité et détails par filiale |
+| `#/flexlm` | Pression et projection des pools concurrents |
+| `#/savings` | Activité des installations ; onglet des capacités et coûts |
+| `#/cases` | Dossiers, hypothèses, assignations, notes et export imprimable |
+| `#/quality` | Présence des dimensions d’inventaire |
+| `#/lake` | Métadonnées des publications et tables disponibles |
+| `#/portfolio` | Périmètre logiciel partagé de l’espace |
+| `#/settings` | Profil, espaces, membres, comptes et seuils |
+| `#/help` | Principes de lecture et limites |
 
-La recherche se lance avec Entrée. Les menus d’espace distinguent les membres
-et accès du portefeuille de licences. Lorsque tout le catalogue est suivi,
-décocher un logiciel passe en sélection personnalisée ; enregistrer applique
-le nouveau périmètre. Les dossiers et coûts historiques sont conservés.
+## Lire et approfondir
 
-## Partage et droits
+Un clic sur une barre ou une portion de graphique ouvre les éléments correspondants lorsque le graphique propose cet approfondissement. Par exemple, sélectionner VM ouvre les machines virtuelles de la sélection. Les filtres et le périmètre de l’espace restent contrôlés côté Python.
 
-PostgreSQL conserve comptes, espaces, appartenances, coûts, dossiers,
-commentaires et événements. MinIO conserve les tables Delta et résultats
-analytiques. Le navigateur ne conserve que des préférences d’affichage et la
-session ; une importation explicite peut reprendre d’anciens coûts locaux.
+Les tableaux servent à lire les valeurs et les fiches. La liste des licences est paginée ; les détails par filiale s’ouvrent séparément. Les journées manquantes restent vides dans la carte de chaleur ; elles ne sont pas transformées en consommation nulle.
 
-Le lecteur consulte. L’analyste modifie coûts et dossiers. L’administrateur de
-l’espace gère aussi les membres et le portefeuille. Il peut créer un compte avec
-un mot de passe de 16 caractères minimum ou ajouter un compte existant.
-L’opération ne remplace jamais le mot de passe d’un compte existant et n’envoie
-aucun e-mail. Un nouveau compte reçoit uniquement l’appartenance choisie.
-Les administrateurs de Nexora Groupe gèrent les mutations du lac commun et
-les seuils globaux.
+## Travailler en équipe
 
-Les API vérifient les appartenances et les rôles. Le catalogue source global
-est volontairement commun aux utilisateurs connectés pour choisir librement
-leurs logiciels ; les données métier des espaces restent isolées. Retirer un
-membre ou le passer lecteur supprime ses assignations avec historique. Les
-modifications concurrentes des dossiers et coûts sont contrôlées par version.
+Le lecteur consulte. L’analyste gère coûts, dossiers et notes selon les règles métier. L’administrateur de l’espace gère aussi les membres et le périmètre. Les modifications utilisent des versions attendues pour détecter les conflits.
 
-## Dossiers et analyses
+L’ajout d’un compte existant et la création d’un nouveau compte possèdent des formulaires distincts. Un utilisateur sans espace accessible peut créer son premier espace ou se déconnecter. Aucun e-mail n’est envoyé automatiquement.
 
-Le parcours courant est À examiner → En cours → Terminé. Un responsable peut
-être assigné ; une note explique les changements. La clôture indique une quantité
-de licences récupérées déclarée ou Aucune suite. La réouverture conserve le
-résultat précédent dans les événements serveur. Les anciennes références
-administratives restent disponibles, mais ne sont plus requises dans le formulaire.
+Les notes supprimées ne réapparaissent pas dans l’export. Le téléchargement d’un dossier revérifie les droits de l’utilisateur ; l’accès à une ancienne page ne suffit pas à conserver ce droit.
 
-Le journal et l’export présentent les notes actuelles. Supprimer une note efface
-son texte initial et toutes ses versions modifiées du stockage serveur. Seules
-les métadonnées de suppression subsistent ; l’historique des décisions du dossier
-est conservé. La migration nettoie aussi les notes déjà supprimées.
+## Interpréter les résultats
 
-Une estimation de récupération ne constitue pas une économie contractuelle.
-Les tarifs sont saisis ; le connecteur ne fournit pas les règles contractuelles.
-La saturation est une extrapolation linéaire indicative. Une année décrit des
-variations mensuelles, mais ne démontre pas une saisonnalité récurrente.
-Les jours absents ne sont pas inventés. Les changements de capacité après une
-lacune portent une incertitude sur leur date effective.
+Une installation n’équivaut pas automatiquement à une licence. Les droits par utilisateur, appareil, cœur ou usage simultané sont présentés dans leur unité. Une absence de donnée ne signifie pas zéro.
 
-## Reproductibilité et limites
+Les montants sont des hypothèses à examiner ; ils ne prouvent pas des gains réalisés. Une activité faible ou absente ne suffit pas à décider un retrait. Les règles contractuelles et le périmètre des observations doivent être vérifiés.
 
-Le rejeu annuel contrôlé est documenté dans [WORKFLOW.md](../WORKFLOW.md).
-Ses outils sont masqués et leurs API refusées par défaut :
-`DEMO_TOOLS_ENABLED=false`. Leur activation explicite requiert également une
-source fictive et un administrateur du lac. Le rejeu prépare une génération
-isolée, valide ses scénarios avec Spark puis l’active sans effacer les données
-métier ni les anciennes générations.
+## Limites et validation
 
-Il n’y a pas encore de SSO, de récupération de mot de passe par e-mail,
-d’ordonnanceur ni de surveillance permanente. Le contrat DIGIMON réel reste
-à adapter et n’est pas requis pour cette démonstration. L’archivage des anciennes
-générations ne comporte pas de nettoyage automatique.
+Les pages lisent les données et résultats publiés ; elles ne lancent pas Spark à chaque interaction. Sans Gold, l’inventaire reste consultable. La collecte DIGIMON est un processus indépendant.
 
-## Vérification
-
-Les commandes de tests Docker/PostgreSQL, Spark et frontend figurent dans
-[WORKFLOW.md](../WORKFLOW.md). Les tests backend vérifient droits, isolation,
-historique, versions concurrentes et scénarios du lac. Les tests frontend
-vérifient notamment périodes, agrégations et transport.
-
-Les derniers changements visuels sont compilés et déployés localement ; les
-parcours navigateur complets n’ont pas été rejoués automatiquement, conformément
-à la demande de ne plus piloter le navigateur. Cette vérification reste distincte
-des tests API.
+Le contrat réel DIGIMON, son intégration au portail et la connexion Power BI sur le réseau cible ne sont pas validés par la démonstration. Voir [l’état de migration](migration-dash.md) pour les contrôles réalisés et les points encore ouverts.

@@ -4,6 +4,14 @@ from dash import html, dcc
 import plotly.graph_objects as go
 
 
+DROPDOWN_LABELS = {
+    'select_all': 'Tout sélectionner', 'deselect_all': 'Tout désélectionner',
+    'selected_count': '{num_selected} sélectionnés', 'search': 'Rechercher…',
+    'clear_search': 'Effacer la recherche', 'clear_selection': 'Effacer la sélection',
+    'no_options_found': 'Aucun résultat',
+}
+
+
 def number(value):
     if value is None:
         return '—'
@@ -49,7 +57,7 @@ def table(columns, rows):
 def field(key, label, value=None, *, options=None, kind='text', **kwargs):
     identifier={'type':'field','key':key}
     if options is not None:
-        control=dcc.Dropdown(id=identifier, options=options, value=value, clearable=False, **kwargs)
+        control=dcc.Dropdown(labels=DROPDOWN_LABELS, id=identifier, options=options, value=value, clearable=False, **kwargs)
     elif kind == 'textarea':
         control=dcc.Textarea(id=identifier, value=value or '', **kwargs)
     else:
@@ -64,7 +72,7 @@ def action(label, name, *, disabled=False, danger=False):
 
 def filter_control(key, label, value=None, options=None):
     identifier={'type':'filter','key':key}
-    control = (dcc.Dropdown(id=identifier, options=options, value=value or '', clearable=False)
+    control = (dcc.Dropdown(labels=DROPDOWN_LABELS, id=identifier, options=options, value=value or '', clearable=False)
         if options is not None else dcc.Input(id=identifier, value=value or '', type='search', debounce=True, placeholder=label))
     return html.Div([html.Label(label, htmlFor=json.dumps(identifier,sort_keys=True,separators=(",",":"))), control], className='field')
 
@@ -79,7 +87,7 @@ def pager(page, offset, total, size=25, **query):
 def plot(figure, identifier=None):
     figure.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
         font=dict(family='Arial, sans-serif', color='#dbe5ee'), margin=dict(l=45,r=20,t=20,b=40),
-        height=340, colorway=['#68b4ec','#64d5b2','#f1c777'], legend=dict(orientation='h',y=-.22),
+        height=figure.layout.height or 400, colorway=['#68b4ec','#64d5b2','#f1c777'], legend=dict(orientation='h',y=-.22),
         uirevision='nexora')
     props={'figure':figure, 'config':{'displaylogo':False,'scrollZoom':False}, 'className':'chart'}
     if identifier: props['id']=identifier

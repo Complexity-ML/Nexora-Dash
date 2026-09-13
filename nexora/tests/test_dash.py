@@ -206,3 +206,20 @@ def test_user_without_memberships_can_create_space_or_logout(dash_context):
         db.execute('DELETE FROM members WHERE workspace_id=%s',(wid,))
     assert command(app,client,'logout',{}).status_code==200
     assert store.user_for_token(token) is None
+
+
+def test_open_page_detects_deployment_without_discarding_edits(dash_context):
+    app,_,_=dash_context
+    client=app.server.test_client()
+    loaded=next(c.data for c in app.layout.children if getattr(c,'id',None)=='ui-version')
+    def check(version):
+        return client.post('/_dash-update-component',json={'output':'ui-update.children',
+            'outputs':{'id':'ui-update','property':'children'},
+            'inputs':[{'id':'ui-version-check','property':'n_intervals','value':1}],
+            'state':[{'id':'ui-version','property':'data','value':version}],
+            'changedPropIds':['ui-version-check.n_intervals']},headers={'Origin':'http://localhost'})
+    assert check(loaded).json['response']['ui-update']['children'] is None
+    response=check('previous-build')
+    assert response.status_code==200
+    assert 'Recharger la page' in json.dumps(response.json,ensure_ascii=False)
+    assert client.get('/assets/nexora.css').headers['Cache-Control']=='no-store'

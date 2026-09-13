@@ -47,9 +47,21 @@ def layout(ctx,query):
 def portfolio_page(ctx,query):
     value=ctx.call(portfolio.portfolio,ctx.wid)
     items=ctx.call(portfolio.catalog,lake=True)
-    choices=[{'label':p['name'],'value':p['pool_id']} for p in items]
-    return html.Div([header('Mon périmètre','Les logiciels dont votre équipe SAM a la charge.'),
-        card(field('portfolio-mode','Périmètre','all' if value['all_catalog'] else 'selected',options=[{'label':'Tout le catalogue, y compris les prochains produits','value':'all'},{'label':'Sélection de produits','value':'selected'}]),
-            field('portfolio-products','Logiciels',value['pool_ids'],options=choices,multi=True),
-            field('portfolio-version','Version',value['version'],kind='hidden'),
-            action('Enregistrer le périmètre','portfolio-save',disabled=not value['can_edit']))],className='stack')
+    choices=[{'label':p['name'],'value':p['pool_id'],'disabled':not value['can_edit']} for p in items]
+    return html.Div([header('Mon périmètre','Choisissez les logiciels suivis par votre équipe SAM.'),
+        dcc.Store(id='portfolio-catalog',data=choices),
+        dcc.RadioItems(id={'type':'field','key':'portfolio-mode'},value='all' if value['all_catalog'] else 'selected',
+            options=[{'label':html.Div([html.Strong('Tout le catalogue'),html.Small('Inclut automatiquement les prochains produits remontés.')]),'value':'all','disabled':not value['can_edit']},
+                     {'label':html.Div([html.Strong('Choisir mes logiciels'),html.Small('Une sélection commune aux membres de cet espace.')]),'value':'selected','disabled':not value['can_edit']}],className='portfolio-modes'),
+        html.Div(id='portfolio-all-note',children=html.P(f'{len(choices)} produits actuellement disponibles. Les nouveaux produits seront inclus automatiquement.')),
+        html.Section([
+            html.Div([html.H2('Les logiciels de votre équipe'),html.Strong(id='portfolio-count',role='status')],className='section-heading'),
+            html.Div([dcc.Input(id='portfolio-search',type='search',placeholder='Rechercher un produit…',debounce=True),
+                html.Button('Tout sélectionner',id='portfolio-select',n_clicks=0,className='button',disabled=not value['can_edit']),
+                html.Button('Tout désélectionner',id='portfolio-clear',n_clicks=0,className='button',disabled=not value['can_edit'])],className='portfolio-toolbar'),
+            html.Small(id='portfolio-search-count',role='status'),
+            dcc.Checklist(id={'type':'field','key':'portfolio-products'},options=choices,value=value['pool_ids'],className='portfolio-products')
+        ],id='portfolio-selection',className='card'),
+        field('portfolio-version','Version',value['version'],kind='hidden'),
+        html.Div([html.Small('Les changements s’appliquent après enregistrement. Les dossiers existants sont conservés.'),
+            action('Enregistrer le périmètre','portfolio-save',disabled=not value['can_edit'])],className='portfolio-footer')],className='stack')
