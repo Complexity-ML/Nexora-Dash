@@ -12,6 +12,9 @@ def savings(ctx,query):
     tabs=html.Nav([link('Usage des installations','savings'),link('Capacités des pools','savings',view='pools')],className='tabs')
     if view!='pools':
         report=ctx.call(inventory.installation_usage,ctx.wid,lake=True)
+        if report.get('available') is False:
+            return html.Div([header('Coûts & économies','Examinez les usages avant de simuler les économies.'),tabs,
+                empty('Aucune analyse des installations publiée. Les niveaux d’activité ne sont pas encore connus.')],className='stack')
         rows=report.get('products',[])
         if query.get('product'):
             selected=next((p for p in rows if (p.get('software_id') or p.get('license_pool_id'))==query['product']),None)

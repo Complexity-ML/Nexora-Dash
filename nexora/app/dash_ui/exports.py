@@ -35,6 +35,8 @@ def analysis_rows(context, query):
                          'Simulation, sans gain réalisé'])
         return columns, rows
     report = context.call(inventory_service.installation_usage, context.wid, lake=True)
+    if report.get('available') is False:
+        raise BusinessError(409,'Aucune analyse des installations publiée.')
     columns = ['Produit', 'Identifiant logiciel', 'Identifiant pool', 'Installations observées',
                'Avec activité', 'Sans activité avec couverture complète', 'Relevés incomplets',
                'Début de période', 'Fin de période', 'Jours analysés']

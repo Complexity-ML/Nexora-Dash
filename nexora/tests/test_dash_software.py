@@ -76,3 +76,17 @@ def test_overview_compares_in_place_and_preserves_scope():
     assert 'Comprendre les usages' not in rendered
     assert '#/overview?subsidiary=s1' in rendered
     assert '"barnorm": "percent"' in rendered
+
+
+def test_empty_lake_does_not_present_unmeasured_activity_as_zero():
+    from app.dash_ui.pages import overview, analysis
+    def unavailable(): raise BusinessError(409,'No Gold')
+    ctx=SimpleNamespace(wid='workspace',summary=unavailable,call=lambda *args,**kwargs:{'available':False,'counts':{'machines':0},'products':[]})
+    home=json.dumps(overview.layout(ctx,{}),cls=PlotlyJSONEncoder)
+    savings=json.dumps(analysis.savings(ctx,{}),cls=PlotlyJSONEncoder)
+    assert 'Aucun inventaire publi' in home and 'Machines et VM' not in home
+    assert 'Aucune analyse des installations' in savings
+    assert 'Couverture compl' not in savings and 'export-table' not in savings
+    from app.dash_ui.exports import export_table
+    with pytest.raises(BusinessError) as error: export_table(ctx,'savings',{})
+    assert error.value.status_code==409

@@ -2,15 +2,29 @@
 
 ## Données et relations
 
-Le snapshot MinIO contient 110 000 salariés, 16 500 prestataires, 79 833 portables,
+Le scénario d’entreprise de référence contient 110 000 salariés, 16 500 prestataires, 79 833 portables,
 36 667 postes fixes, 2 000 serveurs, 20 000 VM et 180 sites répartis entre 12 entités.
 Le modèle vérifie les identifiants uniques, les installations, les liens aux
 utilisateurs, les hôtes des VM et les implantations lors de la relecture.
 
-Le rapport analytique couvre 30 produits et 912 500 installations. Les mesures
+Le rapport analytique de ce scénario couvre 30 produits et 912 500 installations. Les mesures
 séparent fonctionnement des systèmes, activité des services et exécution des
 applications. Une mesure absente reste inconnue ; une couverture incomplète
 ne permet pas de conclure à l’inactivité.
+
+## Installation locale après remise à zéro
+
+Les anciens volumes `samui_sam-minio` et `samui_sam-postgres` ont été supprimés
+sur demande explicite. L’installation utilise désormais les volumes du projet
+Compose `nexora-dash`. Les chiffres du scénario de référence ci-dessus ne
+décrivent donc pas le contenu de cette installation vide.
+
+Les 14 pages ont été construites sans publication ni génération de données.
+Les écrans de synthèse et d’activité distinguent l’absence de rapport de mesures
+nulles ; l’export d’activité est refusé tant que le rapport n’est pas publié.
+La suite complète précédant la remise à zéro a terminé avec 381 tests réussis et
+2 tests ignorés. Les tests ciblés ajoutés après cette vérification ne remplacent
+pas une nouvelle validation complète avant livraison finale.
 
 ## Contrôles automatisés
 

@@ -13,6 +13,10 @@ def layout(ctx, query):
         summary=None
     estate=ctx.call(inventory.inventory,ctx.wid,limit=1,lake=True)
     counts=estate.get('counts',{})
+    if summary is None and estate.get('available') is False:
+        return html.Div([header('Votre parc, dans la durée.','Les données apparaîtront après leur collecte et leur publication.'),
+            empty('Aucun inventaire publié. Les volumes du parc ne sont pas encore connus.'),
+            link('Consulter le Data Lake →','lake')],className='stack')
     if summary is None:
         return html.Div([header('Votre parc, dans la durée.','L’inventaire reste consultable pendant la préparation des analyses.'),
             stats([('Machines et VM',number(counts.get('machines')),'Dans votre périmètre'),
