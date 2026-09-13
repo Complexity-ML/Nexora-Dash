@@ -252,3 +252,29 @@ transmis au lecteur Delta. Les graphiques de fréquence sont des distributions
 sur la période, pas des courbes journalières reconstituées. En l’absence de cette
 publication d’entreprise, l’inventaire reste consultable et l’absence d’analyse
 est affichée explicitement.
+
+## Entretien des projections PostgreSQL
+
+Chaque réindexation publie une nouvelle projection. Les anciennes générations
+peuvent donc occuper davantage de place que l’index actif. La commande suivante
+calcule un plan sans supprimer de données :
+
+```sh
+docker compose exec dash python -m scripts.prune_inventory_index
+```
+
+L’option `--apply` supprime uniquement les lignes des anciennes projections SQL
+qui ne sont plus référencées. Elle conserve l’index actif, les références du journal
+de collecte et de reprise, celles des instantanés BI et les métadonnées des
+exécutions. Aucun objet du lac n’est supprimé. Une dépendance introuvable,
+une collecte en cours ou une sauvegarde tenant le verrou empêche l’opération.
+La commande verrouille les tables de publication pendant la vérification.
+Cette maintenance est manuelle, elle n’est pas exécutée à chaque publication.
+
+Un `DELETE` libère de la place réutilisable dans PostgreSQL, sans nécessairement
+réduire le volume Docker. Pour rendre cette place au système, une maintenance
+séparée peut exécuter `VACUUM (FULL, ANALYZE) inventory_entities` sur la base
+concernée. Cette réécriture demande de l’espace temporaire et bloque l’accès
+à la table pendant son exécution ; prévoir une interruption des lectures.
+Ne pas supprimer un volume PostgreSQL ou MinIO utilisé par l’application pour
+réaliser cet entretien : ce serait une remise à zéro complète.
