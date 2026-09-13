@@ -31,3 +31,14 @@ def test_usage_profiles_exclude_invalid_capacity_and_normalize_per_product():
     assert list(duration.x)==[50,100]
     assert list(duration.y)==[50,0]
     assert list(capacity_history([trend]).data[0].y)==[100,0,200]
+
+
+def test_shared_tooltip_keeps_series_name_without_secondary_box():
+    import plotly.graph_objects as go
+    from app.dash_ui.components import plot
+    figure=go.Figure(go.Bar(name='Jours actifs',x=[3],y=['Produit'],hovertemplate='%{y}<br>%{x} jours<extra>%{fullData.name}</extra>'))
+    rendered=plot(figure).figure
+    assert rendered.data[0].hovertemplate=='%{y}<br>%{x} jours<br>%{fullData.name}<extra></extra>'
+    assert rendered.layout.hoverlabel.font.color=='#f3f7fb'
+    default=plot(go.Figure(go.Scatter(name='Usage',x=[1],y=[2]))).figure
+    assert default.data[0].hovertemplate.endswith('%{fullData.name}<extra></extra>')

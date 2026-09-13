@@ -1,5 +1,6 @@
 from urllib.parse import urlencode
 import json
+import re
 from dash import html, dcc
 import plotly.graph_objects as go
 
@@ -85,6 +86,23 @@ def pager(page, offset, total, size=25, **query):
 
 
 def plot(figure, identifier=None):
+    # Plotly renders <extra> in a separate, theme-dependent box. Keep all text
+    # in the main high-contrast label, including the series name.
+    for trace in figure.data:
+        if not hasattr(trace, 'hovertemplate'):
+            continue
+        template=trace.hovertemplate
+        if isinstance(template,str):
+            extra=re.search(r'<extra>(.*?)</extra>',template,re.DOTALL)
+            if extra:
+                label=extra.group(1)
+                trace.hovertemplate=template[:extra.start()]+('<br>'+label if label else '')+template[extra.end():]+'<extra></extra>'
+            else:
+                trace.hovertemplate=template+('<br>%{fullData.name}' if trace.name else '')+'<extra></extra>'
+        elif template is None:
+            value='%{label}<br>%{value}<br>%{percent}' if trace.type=='pie' else '%{x}<br>%{y}'
+            if trace.type=='heatmap': value+='<br>%{z}'
+            trace.hovertemplate=value+('<br>%{fullData.name}' if trace.name else '')+'<extra></extra>'
     figure.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
         font=dict(family='Arial, sans-serif', color='#dbe5ee'), margin=dict(l=45,r=20,t=20,b=40),
         height=figure.layout.height or 400, colorway=['#68b4ec','#64d5b2','#f1c777'], legend=dict(orientation='h',y=-.22),

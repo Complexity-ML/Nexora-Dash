@@ -19,4 +19,6 @@ Les tests `test_dash.py` vérifient les sessions, les contrôles d’accès et d
 Les figures adaptent leur hauteur au nombre de produits. Les comparaisons d’activité
 conservent des barres groupées : une installation active peut aussi avoir des
 relevés incomplets, ces catégories ne doivent pas être additionnées. Les infobulles
-utilisent un fond sombre et un texte clair communs aux graphiques.
+utilisent un fond sombre et un texte clair communs aux graphiques. Le nom de
+série est intégré dans la même bulle ; l’encart secondaire blanc de Plotly est
+supprimé sans retirer son information.

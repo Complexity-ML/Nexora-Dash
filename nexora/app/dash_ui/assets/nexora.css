@@ -105,3 +105,8 @@
 
 .sidebar nav{display:flex;flex-direction:column;gap:24px}.nav-group{display:grid;gap:4px}.nav-heading{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:#95a7b7;margin:0;padding:4px 12px 10px}.nav-item{display:flex;align-items:center;gap:12px;min-height:42px}.nav-icon{height:19px;width:19px;flex-shrink:0}.nav-item.active .nav-icon{filter:brightness(1.3)}
 @media(max-width:700px){.sidebar nav{display:grid;grid-template-columns:1fr 1fr;gap:18px}.nav-item{font-size:13px}.nav-heading{padding-left:8px}}
+
+/* Plotly box-plot statistics use a secondary SVG label even when a trace
+   suppresses <extra>. Keep its text and background in the same dark theme. */
+.js-plotly-plot .hoverlayer .hovertext rect{fill:#18232e!important;fill-opacity:1!important;stroke:#8dc4e7!important}
+.js-plotly-plot .hoverlayer .hovertext .name{fill:#f3f7fb!important}
