@@ -65,7 +65,12 @@ def quality(ctx,query):
     entity=query.get('entity','machines')
     data=ctx.call(exploration.completeness,ctx.wid,entity=entity,lake=True)
     rows=[dict(r,coverage=f'{(1-r["missing"]/data["total"])*100:.1f} %' if data['total'] else '—',missing=number(r['missing'])) for r in data['fields']]
+    fig=go.Figure()
+    for label,key,color in [('Présentes','present','#6fc6b0'),('Absentes','missing','#e7ad68')]:
+        fig.add_bar(y=[r['name'] for r in data['fields']],x=[(data['total']-r['missing'] if key=='present' else r['missing'])/data['total']*100 if data['total'] else None for r in data['fields']],name=label,orientation='h',marker_color=color)
+    fig.update_layout(barmode='stack');fig.update_xaxes(range=[0,100],ticksuffix=' %');fig.update_yaxes(autorange='reversed',automargin=True)
     return html.Div([header('Qualité des données','Complétude des dimensions dans le périmètre de votre espace.'),
         filter_control('entity','Analyser',entity,[{'label':v,'value':k} for k,v in ENTITIES.items()]),
+        card(html.H2('Couverture des dimensions'),plot(fig)),
         card(table([('name','Champ'),('coverage','Valeurs présentes'),('missing','Valeurs absentes')],rows)),
         html.Small('Ces indicateurs décrivent la présence des champs. Ils ne garantissent pas leur exactitude et ne constituent pas une détection PII.',className='muted')],className='stack')

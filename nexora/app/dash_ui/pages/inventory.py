@@ -1,6 +1,10 @@
 from dash import html
+import json
+import plotly.graph_objects as go
+from app.business import exploration
+from app.business.errors import BusinessError
 from app.business import inventory_service as service
-from app.dash_ui.components import header, stats, card, link, table, number, empty, filter_control, pager
+from app.dash_ui.components import header, stats, card, link, table, number, empty, filter_control, pager, plot, route
 
 ENTITIES={'machines':'Machines et VM','users':'Utilisateurs','sites':'Sites'}
 ENV={'production':'Production','development':'Développement','test':'Test','active':'Actif','inactive':'Inactif',
@@ -41,6 +45,26 @@ def layout(ctx, query):
             'site':html.Div([html.Strong(row.get('site') or row.get('country') or '—'),html.Small(row.get('subsidiary') or '')]),
             'detail':number(product_count) if entity!='sites' else number(row.get('machines')),
             'action':link('→','inventory',entity=entity,detail=identity)})
+    charts=[]
+    chart_filters={k:v for k,v in filters.items() if v and k in exploration.DIMENSIONS and entity in exploration.DIMENSIONS[k][3]}
+    dimensions={'machines':[('kind','Composition du parc'),('environment','Environnements')],
+                'users':[('employment_type','Salariés et prestataires'),('department','Départements')],
+                'sites':[('country','Implantations par pays'),('region','Régions')]}[entity]
+    for dimension,title in dimensions:
+        try:
+            grouped=ctx.call(exploration.aggregate,ctx.wid,entity=entity,dimension=dimension,measure='count',filters=chart_filters,query=query.get('q','')[:200],limit=12,lake=True)
+        except BusinessError as exc:
+            if exc.status_code!=409:raise
+            continue
+        groups=grouped['rows']
+        targets=[route('explore',entity=entity,dimension=dimension,selection=json.dumps({**chart_filters,dimension:r['key0']}),view='records',q=query.get('q')) for r in groups]
+        labels=[ENV.get(str(r['label0']),str(r['label0'] or 'Non remonté')) for r in groups]
+        if dimension in ('kind','employment_type'):
+            fig=go.Figure(go.Pie(labels=labels,values=[r['value'] for r in groups],hole=.65,customdata=targets,textinfo='percent',hovertemplate='%{label}<br>%{value} · %{percent}<extra></extra>'))
+        else:
+            fig=go.Figure(go.Bar(y=labels,x=[r['value'] for r in groups],orientation='h',customdata=targets))
+            fig.update_yaxes(autorange='reversed',automargin=True)
+        charts.append(card(html.H2(title),html.Small('Dans la sélection courante · cliquez pour approfondir.'),plot(fig,{'type':'insight-chart','key':'inventory-'+dimension})))
     return html.Div([header('Inventaire','Machines, utilisateurs et implantations de votre périmètre.'),
         stats([(name,number(counts.get(key)),'Dans votre périmètre') for key,name in ENTITIES.items()]),
         html.Nav([link(name,'inventory',entity=key,subsidiary=filters['subsidiary']) for key,name in ENTITIES.items()],className='tabs'),
@@ -48,6 +72,7 @@ def layout(ctx, query):
         html.Div([html.H2(ENTITIES[entity]),html.Span(f'{number(data.get("total",0))} résultats'),link('Réinitialiser','inventory',entity=entity)],className='section-heading'),
         html.Div([filter_control('kind','Type',filters['kind'],[{'label':'Tout le parc','value':''},{'label':'Machines physiques','value':'physical'},{'label':'Machines virtuelles','value':'virtual'}]),
                   filter_control('environment','Environnement',filters['environment'],[{'label':'Tous','value':''}]+[{'label':ENV[k],'value':k} for k in ('production','test','development')])],className='filters') if entity=='machines' else None,
+        html.Div(charts,className='settings-profile'),
         card(table([('name',ENTITIES[entity]),('description','Système / activité'),('site','Implantation'),('detail','Logiciels' if entity!='sites' else 'Machines'),('action','')],rows)),
         pager('inventory',offset,data.get('total',0),entity=entity,q=query.get('q',''),**filters),
         html.Small('Données fictives' if data.get('is_demo') else 'Source : DIGIMON',className='muted')],className='stack')

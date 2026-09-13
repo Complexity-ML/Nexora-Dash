@@ -153,6 +153,15 @@ def create_app(*, testing=False, store=None):
         if not isinstance(chosen,str): raise PreventUpdate
         query.update(selection=chosen,view='records'); query.pop('offset',None)
         return route('explore',**query)
+    @app.callback(Output('location','hash',allow_duplicate=True),Input({'type':'insight-chart','key':ALL},'clickData'),State({'type':'insight-chart','key':ALL},'id'),prevent_initial_call=True)
+    def open_chart_selection(clicks,ids):
+        selected=next((value for value,identifier in zip(clicks,ids) if identifier==trigger.triggered_id),None)
+        if not isinstance(selected,dict) or not selected.get('points'):raise PreventUpdate
+        target=selected['points'][0].get('customdata')
+        if not isinstance(target,str) or not target.startswith('#/'):raise PreventUpdate
+        page,_=parse_location(target)
+        if page not in ('software','savings','licenses','explore'):raise PreventUpdate
+        return target
     return app
 
 

@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from app.dash_ui.charts import usage_heatmap, installation_activity, capacity_pressure, opportunity_ranking
 from dash import html, dcc
 import plotly.graph_objects as go
 from app.dash_ui.components import header, stats, card, link, table, number, money, empty, filter_control, plot, daily_figure, field, action, pager
@@ -23,6 +24,7 @@ def savings(ctx,query):
             stats([('Installations analysées',number(sum(p['installations_observed'] for p in rows)),f'{report.get("days",0)} jours observés'),
                 ('Sans activité',number(sum(p['installations_without_usage'] for p in rows)),'Couverture complète'),
                 ('Relevés incomplets',number(sum(p['installations_incomplete'] for p in rows)),'Exclus des conclusions d’inactivité')]),
+            card(html.H2('Activité par produit'),html.Small('15 produits avec le plus d’installations sans activité. Cliquez pour examiner les machines.'),plot(installation_activity(rows),{'type':'insight-chart','key':'activity'})),
             card(table([('name','Produit'),('observed','Observées'),('active','Avec activité'),('unused','Sans activité'),('action','')],[{
                 'name':p['software_name'],'observed':number(p['installations_observed']),'active':number(p['installations_active']),
                 'unused':number(p['installations_without_usage']),'action':link('Examiner →','savings',product=p.get('software_id') or p.get('license_pool_id'))
@@ -44,6 +46,7 @@ def savings(ctx,query):
                       action('Enregistrer','cost:'+key,disabled=not ctx.writable)],className='toolbar'),
             html.P(link(f'Voir les {len(related)} dossiers →','cases',pool=key) if related else link('Ouvrir un dossier →','cases',pool=key))))
     return html.Div([header('Coûts & économies','Simulez la valeur des capacités à examiner.'),tabs,
+        card(html.H2('Prioriser les examens'),plot(opportunity_ranking(summary.inactive),{'type':'insight-chart','key':'opportunities'})),
         html.Small('Simulation sur les pools analysés. Ces montants ne sont pas des économies réalisées.',className='muted'),*panels],className='stack')
 
 
@@ -85,6 +88,7 @@ def annual(ctx,query):
         stats([('Période A',f'{values[0]:.1f} %' if values[0] is not None else 'Non calculable','Journées complètes avec capacité positive'),
                ('Période B',f'{values[1]:.1f} %' if values[1] is not None else 'Non calculable','Journées complètes avec capacité positive'),
                ('Évolution',f'{delta:+.1f} points' if delta is not None else '—','Utilisation inchangée' if delta==0 else 'Écart entre les deux périodes')]),
+        card(html.H2('Usage au fil des journées'),html.Small('Une cellule vide signifie une journée absente ou une capacité non calculable. Cliquez pour ouvrir le produit.'),plot(usage_heatmap(trends),{'type':'insight-chart','key':'usage'})),
         card(html.H2('Profil mensuel'),plot(fig)),
         card(html.H2('Changements de capacité'),table([('name','Produit'),('day','Constat'),('before','Avant'),('after','Après')],changes))],className='stack')
 
@@ -107,4 +111,5 @@ def pools(ctx,query):
             html.P(estimate),link('Analyser →','software',pool=r.license_pool_id)))
     return html.Div([header('Pools de licences','Surveillez les capacités concurrentes et leur évolution.'),
         stats([('Pools analysés',number(len(eligible)),'Licences concurrentes'),('Risque élevé',number(sum(r.level=='high' for r in eligible)),'Selon les observations publiées')]),
+        card(html.H2('Capacité et pression d’usage'),html.Small('Cliquez sur un point pour ouvrir le pool.'),plot(capacity_pressure([t for t in summary.trends if t.license_pool_id in concurrent]),{'type':'insight-chart','key':'pressure'})),
         html.Div(cards,className='product-grid'),html.Small('Projection linéaire indicative, limitée à un an.',className='muted')],className='stack')

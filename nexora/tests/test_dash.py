@@ -140,3 +140,21 @@ def test_member_forms_use_independent_account_fields(dash_context):
     response=command(app,client,'member-add',{'member-email':'analyst@sam.demo','member-role':'analyst'})
     assert response.status_code==200
     assert any(m['email']=='analyst@sam.demo' and m['role']=='analyst' for m in service.members(space['id'],user,store))
+
+
+def test_plotly_click_navigates_only_to_allowed_detail_pages(dash_context):
+    app,_,_=dash_context
+    client=app.server.test_client()
+    key=next(k for k,v in app.callback_map.items() if any(i['id']==pattern({'type':'insight-chart','key':['ALL']}) for i in v['inputs']))
+    identifier={'type':'insight-chart','key':'pressure'}
+    def click(target):
+        return client.post('/_dash-update-component',json={
+            'output':key,'outputs':{'id':'location','property':'hash'},
+            'inputs':[{'id':pattern({'type':'insight-chart','key':['ALL']}),'property':'clickData','value':[{'points':[{'customdata':target}]}]}],
+            'state':[{'id':pattern({'type':'insight-chart','key':['ALL']}),'property':'id','value':[identifier]}],
+            'changedPropIds':[pattern(identifier)+'.clickData']},headers={'Origin':'http://localhost'})
+    response=click('#/software?pool=flex-cad')
+    assert response.status_code==200
+    assert response.json['response']['location']['hash']=='#/software?pool=flex-cad'
+    assert click('https://example.invalid').status_code==204
+    assert click('#/settings').status_code==204

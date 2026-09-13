@@ -1,5 +1,8 @@
 from dash import html
-from app.dash_ui.components import header, stats, card, link, table, number, plot, daily_figure, empty
+import json
+import plotly.graph_objects as go
+from app.business import exploration
+from app.dash_ui.components import header, stats, card, link, table, number, plot, daily_figure, empty, route
 from app.business import inventory_service as inventory
 
 
@@ -8,12 +11,21 @@ def layout(ctx, query):
     estate=ctx.call(inventory.inventory,ctx.wid,limit=1,lake=True)
     counts=estate.get('counts',{})
     opportunities=sorted(summary.inactive,key=lambda row:row.recovery_potential,reverse=True)
+    distributions=[]
+    for dimension,title in [('subsidiary','Le parc par filiale'),('os','Systèmes du parc')]:
+        data=ctx.call(exploration.aggregate,ctx.wid,entity='machines',dimension=dimension,measure='count',limit=12,lake=True)
+        rows=data['rows']
+        fig=go.Figure(go.Bar(x=[r['value'] for r in rows],y=[r['label0'] or 'Non remonté' for r in rows],orientation='h',
+            customdata=[route('explore',entity='machines',dimension=dimension,selection=json.dumps({dimension:r['key0']}),view='records') for r in rows]))
+        fig.update_yaxes(autorange='reversed',automargin=True)
+        distributions.append(card(html.H2(title),html.Small('Cliquez sur une barre pour explorer les machines. 12 groupes au maximum.'),plot(fig,{'type':'insight-chart','key':dimension})))
     return html.Div([
         header('Votre parc, dans la durée.', 'Explorez les usages et identifiez les sujets à examiner.', [link('Explorer les données →','explore')]),
         stats([('Machines et VM',number(counts.get('machines')),'Dans votre périmètre'),
                ('Utilisateurs',number(counts.get('users')),'Salariés et prestataires'),
                ('Sites',number(counts.get('sites')),'Implantations observées'),
                ('Pools analysés',number(summary.pools_total),'Avec historique de capacité')]),
+        html.Div(distributions,className='settings-profile'),
         html.Div([
             card(html.H2('Comparer les filiales'),html.P('Répartition du parc, systèmes et environnements.'),link('Explorer →','explore',dimension='subsidiary',split='kind')),
             card(html.H2('Comprendre les usages'),html.P('Installations actives, observations et sujets à examiner.'),link('Analyser →','savings')),
