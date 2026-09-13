@@ -13,7 +13,7 @@ def layout(ctx,query):
     catalog=products(ctx,False)
     opts=[{'label':p['name'],'value':p.get('license_pool_id') or p['software_id']} for p in catalog]
     selected=query.get('pool') or (opts[0]['value'] if opts else None)
-    return html.Div([header('Dossiers','Partagez vos analyses et suivez les actions décidées.'),
+    return html.Div([header('Dossiers','Partagez vos analyses et suivez les actions décidées.',[html.Button('Exporter CSV',id='export-table',n_clicks=0,className='button')]),
         stats([('Dossiers',number(len(rows)),'Dans cet espace'),('En cours',number(sum(r['status']=='in_progress' for r in rows)),'Examens engagés')]),
         card(table([('title','Dossier'),('status','État'),('amount','Hypothèse annuelle')],[{
             'title':link(r['title'],'cases',id=r['id']),'status':STATUS.get(r['status'],r['status']),

@@ -54,15 +54,30 @@ def savings(ctx,query):
         html.Small('Simulation sur les pools analysés. Ces montants ne sont pas des économies réalisées.',className='muted'),*panels],className='stack')
 
 
-def annual(ctx,query):
-    summary=ctx.summary()
-    trends=[t for t in summary.trends if not query.get('pool') or t.license_pool_id==query['pool']]
-    if not trends: return empty('Aucun historique de capacité dans ce périmètre.')
+def annual_ranges(trends, query):
     first=min(str(p['date']) for t in trends for p in t.daily)
     last=max(str(p['date']) for t in trends for p in t.daily)
     midpoint=date.fromisoformat(first)+(date.fromisoformat(last)-date.fromisoformat(first))//2
     ranges=[(query.get('a_start',first),query.get('a_end',midpoint.isoformat())),
             (query.get('b_start',(midpoint+timedelta(days=1)).isoformat()),query.get('b_end',last))]
+    return first,last,ranges
+
+
+def concurrent_pools(ctx):
+    from app.dash_ui.pages.software import products
+    return {p.get('license_pool_id') for p in products(ctx,False)
+            if any(r['metric']=='concurrent' for r in p.get('entitlements',[]))}
+
+
+def export_button():
+    return html.Button('Exporter CSV',id='export-table',n_clicks=0,className='button',title='Exporter les résultats dans le périmètre courant.')
+
+
+def annual(ctx,query):
+    summary=ctx.summary()
+    trends=[t for t in summary.trends if not query.get('pool') or t.license_pool_id==query['pool']]
+    if not trends or not any(t.daily for t in trends): return empty('Aucun historique de capacité dans ce périmètre.')
+    first,last,ranges=annual_ranges(trends,query)
     controls=[filter_control('pool','Historique à comparer',query.get('pool'),[{'label':'Tous les pools de cet espace','value':''}]+[{'label':t.software_name,'value':t.license_pool_id} for t in summary.trends])]
     days={}
     for t in trends:
@@ -87,7 +102,7 @@ def annual(ctx,query):
         for before,after in zip(t.daily,t.daily[1:]):
             if before['capacity']!=after['capacity']:
                 changes.append({'name':t.software_name,'day':after['date'],'before':number(before['capacity']),'after':number(after['capacity'])})
-    return html.Div([header('Analyse annuelle','Comparez les usages et les capacités sur l’historique disponible.'),
+    return html.Div([header('Analyse annuelle','Comparez les usages et les capacités sur l’historique disponible.',[export_button()]),
         html.Div(controls,className='filters'),
         stats([('Période A',f'{values[0]:.1f} %' if values[0] is not None else 'Non calculable','Journées complètes avec capacité positive'),
                ('Période B',f'{values[1]:.1f} %' if values[1] is not None else 'Non calculable','Journées complètes avec capacité positive'),
@@ -104,8 +119,7 @@ def pools(ctx,query):
     summary=ctx.summary()
     eligible=[]
     # Use source product metadata when available rather than inferring licence type from a name.
-    from app.dash_ui.pages.software import products
-    concurrent={p.get('license_pool_id') for p in products(ctx,False) if any(r['metric']=='concurrent' for r in p.get('entitlements',[]))}
+    concurrent=concurrent_pools(ctx)
     eligible=[r for r in summary.risks if r.license_pool_id in concurrent]
     levels={'high':'Élevé','medium':'Modéré','low':'Faible'}
     cards=[]
@@ -116,7 +130,7 @@ def pools(ctx,query):
         cards.append(card(html.Span(levels[r.level],className='badge '+r.level),html.H3(r.software_name),
             html.Strong(number(r.remaining_capacity),className='metric small'),html.Small('unités disponibles'),
             html.P(estimate),link('Analyser →','software',pool=r.license_pool_id)))
-    return html.Div([header('Pools de licences','Surveillez les capacités concurrentes et leur évolution.'),
+    return html.Div([header('Pools de licences','Surveillez les capacités concurrentes et leur évolution.',[export_button()]),
         stats([('Pools analysés',number(len(eligible)),'Licences concurrentes'),('Risque élevé',number(sum(r.level=='high' for r in eligible)),'Selon les observations publiées')]),
         card(html.H2('Capacité et pression d’usage'),html.Small('Cliquez sur un point pour ouvrir le pool.'),plot(capacity_pressure([t for t in summary.trends if t.license_pool_id in concurrent]),{'type':'insight-chart','key':'pressure'})),
         html.Div(cards,className='product-grid'),html.Small('Projection linéaire indicative, limitée à un an.',className='muted')],className='stack')

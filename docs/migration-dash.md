@@ -14,6 +14,7 @@
 - Navigation depuis les autres graphiques vers les éléments correspondants ; clic sur les VM vérifié dans la démonstration.
 - Export CSV du catalogue et des licences : recherche et périmètre courants, toutes les pages, lignes par filiale et unité, droits revérifiés au téléchargement.
 - Export CSV des analyses d’installations et des simulations de capacité : couverture et période conservées, coûts absents distincts de zéro, contrôle d’accès au téléchargement.
+- Exports CSV de l’analyse annuelle (jours observés et appartenance aux périodes A/B), des pools concurrents et de la liste des dossiers filtrée par produit ; les coûts des dossiers restent ceux de leurs hypothèses enregistrées.
 - Export HTML imprimable d’un dossier via Dash avec vérification d’accès au téléchargement.
 - Catalogue consultable sans analyses Gold ; détails des licences chargés à l’ouverture et liste paginée.
 

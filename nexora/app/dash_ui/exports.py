@@ -49,7 +49,46 @@ def analysis_rows(context, query):
                      for p in sorted(items, key=lambda p: p['installations_without_usage'], reverse=True)]
 
 
+def additional_rows(context, page, query):
+    from app.business import workspace_service
+    from app.dash_ui.pages.analysis import annual_ranges, concurrent_pools
+    from app.dash_ui.pages.cases import STATUS
+    if page == 'cases':
+        items = context.call(workspace_service.cases, context.wid)
+        if query.get('pool'):
+            items = [r for r in items if r['pool_id'] == query['pool']]
+        columns = ['Dossier', 'Identifiant', 'Produit / pool', 'État', 'Responsable (identifiant)', 'Quantité examinée', 'Coût annuel unitaire (EUR)', 'Hypothèse annuelle (EUR)']
+        return columns, [[r['title'], r['id'], r['pool_id'], STATUS.get(r['status'], r['status']), r.get('assignee_id'),
+                          r['quantity'], r['annual_unit_cents']/100, r['quantity']*r['annual_unit_cents']/100] for r in items]
+    summary = context.summary()
+    if page == 'flexlm':
+        eligible = concurrent_pools(context)
+        columns = ['Produit', 'Identifiant pool', 'Risque', 'Capacité disponible', 'Croissance par jour', 'Saturation estimée (indicative)']
+        return columns, [[r.software_name, r.license_pool_id, {'high':'Élevé','medium':'Modéré','low':'Faible'}[r.level],
+                          r.remaining_capacity, r.growth_per_day, r.estimated_saturation_date.isoformat() if r.estimated_saturation_date else None]
+                         for r in summary.risks if r.license_pool_id in eligible]
+    trends = [t for t in summary.trends if not query.get('pool') or t.license_pool_id == query['pool']]
+    if not trends or not any(t.daily for t in trends):
+        raise BusinessError(409,'Aucun historique de capacité dans ce périmètre.')
+    first,last,ranges = annual_ranges(trends, query)
+    if any(not first <= start <= end <= last for start,end in ranges):
+        raise BusinessError(400,'Choisissez deux périodes comprises dans l’historique disponible.')
+    columns = ['Produit', 'Identifiant pool', 'Jour observé', 'Usage', 'Capacité', 'Utilisation (%)', 'Période A', 'Période B']
+    rows = []
+    for t in trends:
+        for p in sorted(t.daily,key=lambda p:str(p['date'])):
+            day = str(p['date'])
+            rows.append([t.software_name,t.license_pool_id,day,p['used'],p['capacity'],
+                         100*p['used']/p['capacity'] if p['capacity']>0 else None,
+                         *['Oui' if start<=day<=end else 'Non' for start,end in ranges]])
+    return columns, rows
+
+
 def export_table(context, page, query):
+    if page in ('annual','flexlm','cases'):
+        columns,rows = additional_rows(context,page,query)
+        return {'content':csv_document(columns,rows),'filename':f'nexora-{page}.csv','type':'text/csv;charset=utf-8','base64':False}
+
     if page == 'savings':
         columns, rows = analysis_rows(context, query)
         kind = 'capacites' if query.get('view') == 'pools' else 'installations'
