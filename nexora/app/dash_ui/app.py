@@ -93,7 +93,7 @@ def create_app(*, testing=False, store=None):
         return response
 
     app.layout=html.Div([dcc.Location(id='location',refresh=False),dcc.Store(id='revision',data=0),
-        dcc.Download(id='download'),dcc.Store(id='ui-version',data=ui_version),
+        dcc.Download(id='download'),dcc.Download(id='download-table'),dcc.Store(id='ui-version',data=ui_version),
         dcc.Interval(id='ui-version-check',interval=30000),html.Div(id='ui-update'),html.Div(id='shell'),html.Div(id='message',role='status',className='toast')])
 
     @app.callback(Output('ui-update','children'),Input('ui-version-check','n_intervals'),State('ui-version','data'))
@@ -147,6 +147,20 @@ def create_app(*, testing=False, store=None):
             exported=context.call(workspace_service.export_case,context.wid,identifier['id'])
             return {'content':exported['content'],'filename':exported['filename'],'type':'text/html','base64':False},'Dossier exporté.'
         except BusinessError as exc:return no_update,exc.detail
+
+    @app.callback(Output('download-table','data'),Output('message','children',allow_duplicate=True),
+        Input('export-table','n_clicks'),State('location','hash'),prevent_initial_call=True)
+    def download_table(clicks,location):
+        if not clicks:raise PreventUpdate
+        try:
+            from app.dash_ui.exports import export_table
+            context=current_context()
+            page,query=parse_location(location)
+            return export_table(context,page,query),'Export CSV téléchargé.'
+        except BusinessError as exc:return no_update,exc.detail
+        except Exception:
+            logging.exception('Tabular export failed')
+            return no_update,'Export indisponible. Réessayez plus tard.'
 
     @app.callback(Output('revision','data',allow_duplicate=True),Input('workspace-picker','value'),State('revision','data'),prevent_initial_call=True)
     def choose_workspace(value,revision):

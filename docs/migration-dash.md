@@ -8,6 +8,7 @@
 - Lecture des publications Gold sans déclenchement de Spark à chaque navigation.
 - Graphiques de répartition du parc, comparaisons par filiale et système, usages quotidiens, activité des installations, licences par unité, pression des pools et classement des opportunités.
 - Navigation depuis un graphique vers les éléments correspondants ; clic sur les VM vérifié dans la démonstration.
+- Export CSV du catalogue et des licences : recherche et périmètre courants, toutes les pages, lignes par filiale et unité, droits revérifiés au téléchargement.
 - Export HTML imprimable d’un dossier via Dash avec vérification d’accès au téléchargement.
 - Catalogue consultable sans analyses Gold ; détails des licences chargés à l’ouverture et liste paginée.
 
@@ -24,7 +25,7 @@ Les tests `test_dash.py` exercent les callbacks, sessions, refus d’accès, not
 ## À terminer avant clôture
 
 - Vérification finale des guides et commandes sur une installation neuve ; les guides d’exploitation, de BI et de parcours décrivent désormais Dash et les services Python.
-- Vérification des exports tabulaires et autres fonctions de confort de l’ancienne interface.
+- Compléter les exports des autres vues et vérifier les fonctions de confort de l’ancienne interface.
 - Compléter les vues économiques interactives. Le suivi des collectes est désormais accessible aux opérateurs dans la page Data Lake.
 - Vérifier tous les parcours métier et graphiques dans le navigateur, avec plusieurs largeurs et des espaces à périmètre partiel.
 - Vérifier visuellement les états sans espace ou sans publication ; les parcours sont désormais couverts par les tests de callbacks et de pages.

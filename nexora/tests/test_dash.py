@@ -223,3 +223,33 @@ def test_open_page_detects_deployment_without_discarding_edits(dash_context):
     assert response.status_code==200
     assert 'Recharger la page' in json.dumps(response.json,ensure_ascii=False)
     assert client.get('/assets/nexora.css').headers['Cache-Control']=='no-store'
+
+
+def test_tabular_download_revalidates_current_membership(dash_context,monkeypatch):
+    app,store,password=dash_context
+    from app.dash_ui import exports
+    client=app.server.test_client();login(app,client,password,'analyst')
+    with client.session_transaction() as session:
+        user=store.user_for_token(session['token'])
+        space=service.create_workspace(service.Name(name='CSV scope '+str(uuid4())),user,store)
+        session['workspace']=space['id']
+    calls=[]
+    def products(context,include_installations=True):
+        calls.append(context.wid)
+        return [{'software_id':'scoped','name':'Only this space','machines':3}]
+    monkeypatch.setattr(exports,'products',products)
+    key=next(k for k in app.callback_map if 'download-table.data' in k)
+    def download():
+        return client.post('/_dash-update-component',json={'output':key,
+            'outputs':[{'id':'download-table','property':'data'},{'id':'message','property':'children'}],
+            'inputs':[{'id':'export-table','property':'n_clicks','value':1}],
+            'state':[{'id':'location','property':'hash','value':'#/software'}],
+            'changedPropIds':['export-table.n_clicks']},headers={'Origin':'http://localhost'})
+    response=download()
+    assert response.status_code==200
+    assert 'Only this space' in response.json['response']['download-table']['data']['content']
+    assert calls==[space['id']]
+    with store.connect() as db:db.execute('DELETE FROM members WHERE workspace_id=%s',(space['id'],))
+    denied=download()
+    assert 'download-table' not in denied.json['response']
+    assert calls==[space['id']]

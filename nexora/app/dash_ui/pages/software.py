@@ -8,6 +8,10 @@ from app.dash_ui.components import header, stats, card, link, table, number, emp
 UNITS={'device':'appareils','named_user':'utilisateurs nommés','concurrent':'usages simultanés','core':'cœurs','host':'hôtes','unmetered':'Sans décompte'}
 
 
+def export_button():
+    return html.Button('Exporter CSV',id='export-table',n_clicks=0,className='button',title='Tous les résultats de la recherche dans cet espace, au-delà de la page affichée. Les licences sont détaillées par filiale et unité.')
+
+
 def products(ctx, include_installations=True):
     return ctx.call(inventory.inventory_software,ctx.wid,include_installations=include_installations,lake=True)
 
@@ -36,7 +40,7 @@ def layout(ctx, query):
             html.Strong(number(p.get('machines')),className='metric small'),html.Small('machines inventoriées'),
             html.P(f'{trend.utilization_rate:.1%} d’utilisation de la capacité' if trend else 'Inventaire des installations'),
             link('Ouvrir le produit →','software',product=p['software_id'])))
-    return html.Div([header('Parc logiciel','Applications, systèmes et services remontés par DIGIMON.',[link('Gérer mon périmètre →','portfolio')]),
+    return html.Div([header('Parc logiciel','Applications, systèmes et services remontés par DIGIMON.',[link('Gérer mon périmètre →','portfolio'),export_button()]),
         html.Div([filter_control('q','Rechercher un logiciel',query.get('q')),html.Span(f'{number(len(filtered))} produits')],className='toolbar'),
         html.Div(cards,className='product-grid'),pager('software',offset,len(filtered),size=12,q=query.get('q',''))],className='stack')
 
@@ -81,7 +85,7 @@ def licenses(ctx,query):
         if selected is None:
             return html.Div([link('← Licences & abonnements','licenses'),empty('Produit indisponible dans ce périmètre.')],className='stack')
         return html.Div([link('← Licences & abonnements','licenses',q=query.get('q')),
-            header(selected['name'],'Licences et abonnements par filiale.'),
+            header(selected['name'],'Licences et abonnements par filiale.',[export_button()]),
             card(right_details(selected))],className='stack')
     filtered=[p for p in items if query.get('q','').casefold() in p['name'].casefold()]
     offset=max(0,int(query.get('offset',0)))
@@ -105,7 +109,7 @@ def licenses(ctx,query):
         rows.append({'name':html.Strong(p['name']), 'quantity':quantities or 'Non reçue dans ce périmètre',
             'unit':[html.Div(UNITS.get(g['metric'],g['metric'])) for g in groups],
             'detail':link('Détails →','licenses',product=p['software_id'],q=query.get('q'))})
-    return html.Div([header('Licences & abonnements','Quantités remontées par DIGIMON, dans leur unité de licence.'),
+    return html.Div([header('Licences & abonnements','Quantités remontées par DIGIMON, dans leur unité de licence.',[export_button()]),
         html.Div([filter_control('q','Rechercher un produit',query.get('q')),html.Span(f'{number(len(filtered))} produits')],className='toolbar'),
         card(html.H2('Comparer les quantités reçues'),filter_control('unit','Unité de comparaison',unit,[{'label':UNITS.get(u,u),'value':u} for u in units]),html.Small('15 produits au maximum, dans une même unité. Les totaux partiels sont signalés.'),plot(figure,{'type':'insight-chart','key':'licenses'})) if units else empty('Aucune quantité comparable disponible.'),
         card(table([('name','Produit'),('quantity','Quantité reçue'),('unit','Unité'),('detail','')],rows)),

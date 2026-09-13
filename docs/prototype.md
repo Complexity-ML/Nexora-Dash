@@ -45,3 +45,9 @@ Les montants sont des hypothèses à examiner ; ils ne prouvent pas des gains r�
 Les pages lisent les données et résultats publiés ; elles ne lancent pas Spark à chaque interaction. Sans Gold, l’inventaire reste consultable. La collecte DIGIMON est un processus indépendant.
 
 Le contrat réel DIGIMON, son intégration au portail et la connexion Power BI sur le réseau cible ne sont pas validés par la démonstration. Voir [l’état de migration](migration-dash.md) pour les contrôles réalisés et les points encore ouverts.
+
+## Exports CSV
+
+Le parc logiciel et les licences proposent « Exporter CSV ». Le fichier contient tous les résultats de la recherche dans l’espace actif, au-delà de la page affichée. Pour les licences, chaque filiale et chaque unité conserve sa ligne. Le choix d’unité du graphique ne filtre pas le tableau ni son export. Une remontée manquante reste vide avec son état explicite ; elle ne devient pas zéro.
+
+Le téléchargement revérifie la session et l’accès à l’espace. Il appelle les services Python sans lancer Spark. Le CSV utilise un séparateur point-virgule et UTF-8 avec BOM. Les textes pouvant être interprétés comme des formules sont neutralisés pour leur ouverture dans un tableur.
