@@ -24,7 +24,7 @@ def dash_context():
 
 
 def command(app,client,name,fields,origin='http://localhost'):
-    key=next(k for k in app.callback_map if 'message.children' in k)
+    key=next(k for k in app.callback_map if 'message.children' in k and 'revision.data' in k)
     action={'type':'action','name':name}
     ids=[{'type':'field','key':k} for k in fields]
     state=[{'id':pattern({'type':'action','name':['ALL']}),'property':'id','value':[action]},
@@ -158,3 +158,29 @@ def test_plotly_click_navigates_only_to_allowed_detail_pages(dash_context):
     assert response.json['response']['location']['hash']=='#/software?pool=flex-cad'
     assert click('https://example.invalid').status_code==204
     assert click('#/settings').status_code==204
+
+
+def test_dossier_download_revalidates_space_membership(dash_context):
+    app,store,password=dash_context
+    client=app.server.test_client();login(app,client,password)
+    with client.session_transaction() as session:
+        user=store.user_for_token(session['token'])
+        space=service.create_workspace(service.Name(name='Export space'),user,store)
+        session['workspace']=space['id']
+    dossier=service.create_case(space['id'],service.CaseCreate(pool_id='demo',title='Export <test>',quantity=1,evidence='Private evidence'),user,store)
+    key=next(k for k in app.callback_map if 'download.data' in k)
+    identifier={'type':'export-case','id':dossier['id']}
+    def download():
+        return client.post('/_dash-update-component',json={'output':key,
+            'outputs':[{'id':'download','property':'data'},{'id':'message','property':'children'}],
+            'inputs':[{'id':pattern({'type':'export-case','id':['ALL']}),'property':'n_clicks','value':[1]}],
+            'state':[{'id':pattern({'type':'export-case','id':['ALL']}),'property':'id','value':[identifier]}],
+            'changedPropIds':[pattern(identifier)+'.n_clicks']},headers={'Origin':'http://localhost'})
+    response=download()
+    data=response.json['response']['download']['data']
+    assert 'Private evidence' in data['content'] and 'Export &lt;test&gt;' in data['content']
+    assert data['type']=='text/html'
+    with store.connect() as db:db.execute('DELETE FROM members WHERE workspace_id=%s',(space['id'],))
+    denied=download()
+    assert 'download' not in denied.json['response']
+    assert 'Private evidence' not in denied.text

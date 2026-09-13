@@ -39,7 +39,7 @@ def detail(ctx,cid):
             field('note-version:'+str(note['id']),'Version',note['comment']['version'],kind='hidden')))
     allowed={'preparing':['in_progress'],'in_progress':['preparing','completed'],'completed':['preparing'],
              'sent':['preparing','completed'],'response_received':['preparing','completed']}.get(value['status'],[])
-    return html.Div([link('← Dossiers','cases'),header(value['title'],STATUS.get(value['status'],value['status'])),
+    return html.Div([link('← Dossiers','cases'),header(value['title'],STATUS.get(value['status'],value['status']),[html.Button('Exporter le dossier',id={'type':'export-case','id':cid},n_clicks=0,className='button')]),
         field('case-id','Dossier',cid,kind='hidden'),field('case-version','Version',value['version'],kind='hidden'),
         stats([('Quantité examinée',number(value['quantity']),'Hypothèse du dossier'),('Valeur annuelle',money(value['quantity']*value['annual_unit_cents']),'Simulation')]),
         card(html.H2('Hypothèses'),html.P(value['evidence']),html.Div([

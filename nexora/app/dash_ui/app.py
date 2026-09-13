@@ -85,7 +85,7 @@ def create_app(*, testing=False, store=None):
         return response
 
     app.layout=html.Div([dcc.Location(id='location',refresh=False),dcc.Store(id='revision',data=0),
-        html.Div(id='shell'),html.Div(id='message',role='status',className='toast')])
+        dcc.Download(id='download'),html.Div(id='shell'),html.Div(id='message',role='status',className='toast')])
 
     @app.callback(Output('shell','children'),Input('location','hash'),Input('revision','data'))
     def render(location,revision):
@@ -113,6 +113,18 @@ def create_app(*, testing=False, store=None):
             html.Main([html.Div([html.Span('DÉMONSTRATION · Données fictives' if os.environ.get('SAM_DATA_SOURCE','mock')=='mock' else 'Source : DIGIMON'),
                                  action('Actualiser','refresh')],className='topbar'),
                 dcc.Loading(html.Div(content,id='page-content'),delay_show=350,type='dot',overlay_style={'visibility':'visible','opacity':.65})],className='main')],className='app-shell')
+
+    @app.callback(Output('download','data'),Output('message','children',allow_duplicate=True),
+        Input({'type':'export-case','id':ALL},'n_clicks'),State({'type':'export-case','id':ALL},'id'),prevent_initial_call=True)
+    def download_case(clicks,identifiers):
+        identifier=trigger.triggered_id
+        if identifier not in identifiers or not clicks[identifiers.index(identifier)]:raise PreventUpdate
+        try:
+            from app.business import workspace_service
+            context=current_context()
+            exported=context.call(workspace_service.export_case,context.wid,identifier['id'])
+            return {'content':exported['content'],'filename':exported['filename'],'type':'text/html','base64':False},'Dossier exporté.'
+        except BusinessError as exc:return no_update,exc.detail
 
     @app.callback(Output('revision','data',allow_duplicate=True),Input('workspace-picker','value'),State('revision','data'),prevent_initial_call=True)
     def choose_workspace(value,revision):
