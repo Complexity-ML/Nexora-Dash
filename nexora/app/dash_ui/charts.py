@@ -1,5 +1,7 @@
 """Figures built from scoped, published data; no collection or Spark execution."""
 from datetime import date, timedelta
+from html import escape
+from math import floor, ceil
 import plotly.graph_objects as go
 from app.dash_ui.components import route
 
@@ -58,15 +60,35 @@ def opportunity_ranking(candidates):
 def usage_distribution(trends):
     """Observed daily ratios only: missing data is never counted as inactivity."""
     fig=go.Figure()
-    for t in trends:
+    for index,t in enumerate(trends):
         samples=[100*r['used']/r['capacity'] for r in t.daily if r['capacity']>0]
         if samples:
+            color=['#68b4ec','#64d5b2','#f1c777'][index%3]
             fig.add_trace(go.Box(x=samples,name=t.software_name,orientation='h',boxpoints=False,
-                customdata=[route('software',pool=t.license_pool_id)]*len(samples),
-                hovertemplate='%{x:.1f} %<extra>%{fullData.name}</extra>'))
+                quartilemethod='linear',marker_color=color,hoverinfo='skip',
+                customdata=[route('software',pool=t.license_pool_id)]*len(samples)))
+            ordered=sorted(samples)
+            def percentile(fraction):
+                # Match Plotly's linear Box interpolation (n*p - 0.5).
+                position=max(0,min(len(ordered)-1,len(ordered)*fraction-.5))
+                weight=position%1
+                return ordered[floor(position)]*(1-weight)+ordered[ceil(position)]*weight
+            q1,median,q3=(percentile(p) for p in (.25,.5,.75))
+            fmt=lambda value:f'{value:.1f}'.replace('.',',')+' %'
+            summary=(f'<b>{escape(t.software_name)}</b><br>{len(samples)} journées observées'
+                f'<br>Minimum : {fmt(min(samples))}<br>Premier quartile : {fmt(q1)}'
+                f'<br>Médiane : {fmt(median)}<br>Troisième quartile : {fmt(q3)}'
+                f'<br>Maximum : {fmt(max(samples))}<extra></extra>')
+            # Native Box hover produces five rotated, overlapping labels. A
+            # transparent hit area across the row shows one statistical summary.
+            targets=[min(samples)+(max(samples)-min(samples))*i/40 for i in range(41)]
+            fig.add_scatter(x=targets,y=[t.software_name]*len(targets),mode='markers',
+                marker=dict(size=24,opacity=0,color=color),showlegend=False,
+                name=t.software_name,hovertemplate=summary,
+                customdata=[route('software',pool=t.license_pool_id)]*len(targets))
     fig.update_xaxes(title='Utilisation journalière (%)',rangemode='tozero')
     fig.update_yaxes(autorange='reversed',automargin=True)
-    fig.update_layout(showlegend=False,height=max(340,38*len(trends)))
+    fig.update_layout(showlegend=False,hovermode='closest',height=max(340,44*len(trends)))
     return fig
 
 

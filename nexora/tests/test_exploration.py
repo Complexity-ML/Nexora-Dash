@@ -16,7 +16,7 @@ def exploration_context(business_fixture):
     user=store.user_for_token(headers['admin']['Authorization'].split()[1])
     wid=base.split('/')[-1]
     # Small, realistic deterministic inventory from the same generator as collection tests.
-    from app.connectors.demo import snapshot
+    from enterprise_fixture import snapshot
     at=datetime(2026,1,1,tzinfo=timezone.utc)
     raw=snapshot(at)
     model=InventorySnapshot(captured_at=at,source='digimon-mock',**raw['inventory'])

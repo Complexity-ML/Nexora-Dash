@@ -5,7 +5,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 from test_collection_runner import context
-from app.connectors.demo import snapshot
+from enterprise_fixture import snapshot
 from app.connectors.digimon import map_digimon_payload
 from app.models.inventory import map_inventory_payload
 from app.business.inventory_index import publish_index

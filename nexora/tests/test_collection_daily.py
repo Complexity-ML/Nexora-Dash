@@ -2,7 +2,7 @@ from datetime import date, datetime, timezone
 from test_collection_runner import context
 from app.collection.daily import ReadySnapshot, collect_days
 from app.collection.reader import PublishedCollection
-from app.connectors.demo import snapshot
+from enterprise_fixture import snapshot
 import pytest
 
 

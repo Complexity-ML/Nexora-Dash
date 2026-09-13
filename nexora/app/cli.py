@@ -19,7 +19,6 @@ COMMANDS = [
     ('bi reconcile', 'app.commands.revoke_restored_bi_readers', True),
     ('backup hold', 'app.commands.hold_backup_snapshot', True),
     ('dev demo initialize', 'devtools.demo.initialize_demo', False),
-    ('dev demo legacy-inventory', 'devtools.demo.seed_demo_inventory', False),
     ('dev demo inventory', 'devtools.demo.seed_enterprise_inventory', True),
     ('dev demo usage', 'devtools.demo.seed_enterprise_product_usage', False),
     ('dev demo analyze', 'devtools.demo.analyze_enterprise_installations', False),

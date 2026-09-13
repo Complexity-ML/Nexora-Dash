@@ -492,8 +492,8 @@ et le lac sources de la fixture avant de restaurer dans une autre base.
 La vérification retrouve le résumé de catalogue matérialisé, l’ordre d’examen des
 reprises et la présence silencieuse du worker. Elle reprend ensuite le lot depuis
 le Bronze restauré, avec Spark, sans connecteur source. Le même identifiant est
-publié ; une nouvelle passe de reprise ne trouve plus ce lot. L’exécution locale
-a vérifié 22 fichiers, 120 machines, 12 pools et 24 relevés sur deux journées.
+publié ; une nouvelle passe de reprise ne trouve plus ce lot. Le contrôle compare les fichiers et les entités restaurés aux références
+figées avant sauvegarde.
 Les bases et fichiers temporaires sont supprimés à la fin de l’exercice.
 
 Cela valide la restauration de l’état figé de la fixture et la reprise après
@@ -794,9 +794,8 @@ passage terminé reste distincte de celle du heartbeat : la présence seule ne
 prouve pas la publication d’un relevé.
 
 L’exercice `workflow/verify-collection-restore.py` restaure également les rôles des
-workers et les identités BI. Le contrôle exécuté retrouve 120 machines, 12 pools,
-30 fichiers vérifiés et deux instantanés BI ; le lot interrompu reprend jusqu’à
-24 observations. Un jeton révoqué avant le point de sauvegarde reste refusé et un
+workers et les identités BI. Le contrôle vérifie les machines, les pools, les fichiers et les instantanés BI
+du scénario sauvegardé, puis reprend le lot interrompu. Un jeton révoqué avant le point de sauvegarde reste refusé et un
 jeton créé après ce point n’existe pas dans la restauration. Un collecteur quotidien
 en échec conserve son rôle et son alerte, indépendamment du worker de reprise
 silencieux. Les bases et fichiers de cet exercice sont temporaires et supprimés.

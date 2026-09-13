@@ -8,7 +8,7 @@ import pytest
 from app.business.store import BusinessStore
 from app.collection.journal import CollectionJournal
 from app.collection.runner import CollectionRunner
-from app.connectors.demo import snapshot
+from enterprise_fixture import snapshot
 from app.models.canonical import AnalyticsSummary
 from app.storage.delta_tables import DeltaTables
 from app.storage.table_reader import read_table
@@ -213,7 +213,7 @@ def test_api_reads_published_data_and_index_without_live_source(context):
     assert latest_inventory(served.store).captured_at.day==1
     with journal.store.connect() as db:
         index=read_index(db,inventory_namespace(served.store),None,'machines','',0,25,{})
-    assert index['total']==120
+    assert index['total']==138
 
 
 def test_journaled_sync_returns_stable_identity_and_yields_event_loop(context):
@@ -256,7 +256,7 @@ def test_published_inventory_index_is_pinned_by_run_id(context):
     with journal.store.connect() as db:
         assert inventory_head(db,pipeline.store)['id']==manifest['index_run']
         rows=read_index(db,inventory_namespace(pipeline.store),None,'machines','',0,25,{},expected_run=manifest['index_run'])
-    assert rows['total']==120
+    assert rows['total']==138
 
 
 @pytest.mark.parametrize('same_values', [True, False])

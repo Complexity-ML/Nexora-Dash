@@ -3,7 +3,7 @@ from datetime import datetime,timezone
 from io import StringIO
 from test_collection_runner import context
 from test_bi_reader_service import client
-from app.connectors.demo import snapshot
+from enterprise_fixture import snapshot
 from app.collection.runner import CollectionRunner
 from app.bi.catalog import prepare_license_snapshot,publish_snapshot
 from app.bi.auth import issue_reader
@@ -16,15 +16,15 @@ def test_license_export_keeps_units_nulls_identity_and_subsidiary(context,monkey
     raw['inventory']['observations']=[]
     raw['inventory']['products']=[{'software_id':p,'name':'Same display name','category':'application'} for p in ('first','second')]
     raw['inventory']['entitlements']=[
-        {'entitlement_id':'core','software_id':'first','metric':'core','quantity':7,'subsidiary_id':'demo-subsidiary-1'},
-        {'entitlement_id':'host','software_id':'first','metric':'host','quantity':3,'subsidiary_id':'demo-subsidiary-1'},
-        {'entitlement_id':'unknown','software_id':'first','metric':'device','quantity':None,'subsidiary_id':'demo-subsidiary-1'},
+        {'entitlement_id':'core','software_id':'first','metric':'core','quantity':7,'subsidiary_id':'ent-sub-01'},
+        {'entitlement_id':'host','software_id':'first','metric':'host','quantity':3,'subsidiary_id':'ent-sub-01'},
+        {'entitlement_id':'unknown','software_id':'first','metric':'device','quantity':None,'subsidiary_id':'ent-sub-01'},
         {'entitlement_id':'global','software_id':'first','metric':'device','quantity':100},
-        {'entitlement_id':'other','software_id':'first','metric':'device','quantity':99,'subsidiary_id':'demo-subsidiary-2'},
-        {'entitlement_id':'same-name','software_id':'second','metric':'device','quantity':80,'subsidiary_id':'demo-subsidiary-1'}]
+        {'entitlement_id':'other','software_id':'first','metric':'device','quantity':99,'subsidiary_id':'ent-sub-02'},
+        {'entitlement_id':'same-name','software_id':'second','metric':'device','quantity':80,'subsidiary_id':'ent-sub-01'}]
     CollectionRunner(pipeline,journal).run(raw,source='digimon-mock',scope='group',snapshot_id='licenses',source_revision='1')
     candidate=prepare_license_snapshot(pipeline.store,journal,source='digimon-mock',scope='group',audience='licenses',
-        software_ids=['first'],subsidiary_ids=['demo-subsidiary-1'])
+        software_ids=['first'],subsidiary_ids=['ent-sub-01'])
     publish_snapshot(pipeline.store,journal,candidate['snapshot_id'],expected_snapshot=None)
     credential=issue_reader(journal.store,namespace=pipeline.store.prefix,audience='licenses')
     http=client(context,monkeypatch)

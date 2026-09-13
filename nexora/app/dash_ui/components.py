@@ -89,7 +89,7 @@ def plot(figure, identifier=None):
     # Plotly renders <extra> in a separate, theme-dependent box. Keep all text
     # in the main high-contrast label, including the series name.
     for trace in figure.data:
-        if not hasattr(trace, 'hovertemplate'):
+        if trace.hoverinfo == 'skip' or not hasattr(trace, 'hovertemplate'):
             continue
         template=trace.hovertemplate
         if isinstance(template,str):

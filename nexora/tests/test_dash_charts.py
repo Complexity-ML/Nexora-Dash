@@ -42,3 +42,22 @@ def test_shared_tooltip_keeps_series_name_without_secondary_box():
     assert rendered.layout.hoverlabel.font.color=='#f3f7fb'
     default=plot(go.Figure(go.Scatter(name='Usage',x=[1],y=[2]))).figure
     assert default.data[0].hovertemplate.endswith('%{fullData.name}<extra></extra>')
+
+
+def test_distribution_has_one_summary_and_preserves_navigation():
+    from app.dash_ui.charts import usage_distribution
+    from app.dash_ui.components import plot
+    trend=SimpleNamespace(software_name='A & B',license_pool_id='pool',daily=[
+        {'used':v,'capacity':100} for v in [0,20,40,60,100]])
+    figure=plot(usage_distribution([trend])).figure
+    box,summary=figure.data
+    assert box.hoverinfo=='skip' and box.hovertemplate is None
+    assert figure.layout.hovermode=='closest'
+    assert 'A &amp; B' in summary.hovertemplate
+    for value in ['Minimum : 0,0 %','Premier quartile : 15,0 %','Médiane : 40,0 %',
+                  'Troisième quartile : 70,0 %','Maximum : 100,0 %','5 journées']:
+        assert value in summary.hovertemplate
+    assert set(summary.customdata)=={'#/software?pool=pool'}
+    assert min(summary.x)==0 and max(summary.x)==100
+    trend.daily=[{'used':1,'capacity':2}]
+    assert 'Médiane : 50,0 %' in usage_distribution([trend]).data[1].hovertemplate

@@ -73,7 +73,7 @@ def test_recovery_leaves_explicit_import_activation_to_operator(context):
 
 def test_recovery_preserves_expected_batch_day(context):
     from datetime import datetime, timezone
-    from app.connectors.demo import snapshot
+    from enterprise_fixture import snapshot
     pipeline, journal = context
     def crash(event):
         if event == 'after_checkpoint_bronze':
@@ -132,7 +132,7 @@ def test_old_interrupted_payload_cannot_replace_later_published_day(context):
     from app.collection.reader import PublishedCollection
     from app.storage.table_reader import read_table
     from datetime import datetime, timezone
-    from app.connectors.demo import snapshot
+    from enterprise_fixture import snapshot
     pipeline, journal = interrupted(context)
     old = journal.recovery_candidates(pipeline.store.prefix, 'digimon-mock', 'group')[0]
     raw = snapshot(datetime(2026,1,1,tzinfo=timezone.utc))

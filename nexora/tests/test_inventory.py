@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 import pytest
-from app.connectors.demo import snapshot
-from app.connectors.demo_inventory import inventory
+from enterprise_fixture import snapshot
+from enterprise_fixture import inventory
 from app.models.inventory import map_inventory_payload
 
 
@@ -14,9 +14,9 @@ def test_inventory_demo_links_and_determinism():
     raw = payload()
     assert raw == payload()
     model = map_inventory_payload(raw)
-    assert len(model.machines) == 120 and len(model.users) == 60
-    assert len(model.observations) == 240
-    assert sum(m.kind == 'virtual' for m in model.machines) == 40
+    assert len(model.machines) == 138 and len(model.users) == 126
+    assert len(model.observations) == 252
+    assert sum(m.kind == 'virtual' for m in model.machines) == 20
     assert any('Red Hat' in m.operating_system for m in model.machines)
     assert map_inventory_payload({'capturedAt': raw['capturedAt']}) is None
 
@@ -46,11 +46,11 @@ def test_inventory_view_scopes_all_relationships_and_paginates():
     model = map_inventory_payload(payload())
     empty = inventory_view(model, [], 'machines', '', 0, 25)
     assert empty['rows'] == [] and empty['counts'] == {'machines':0,'users':0,'sites':0}
-    page = inventory_view(model, ['flex-cad'], 'machines', '', 0, 5)
-    assert len(page['rows']) == 5 and page['total'] > 5
+    page = inventory_view(model, ['flex-cad'], 'machines', '', 0, 2)
+    assert len(page['rows']) == 2 and page['total'] > 2
     assert all(row['software'] == ['flex-cad'] for row in page['rows'])
-    assert inventory_view(model,None,'machines','Red Hat',0,100)['total'] == 40
-    assert inventory_view(model,None,'sites','Toulouse',0,25)['total'] == 1
+    assert inventory_view(model,None,'machines','Red Hat',0,100)['total'] == sum('Red Hat' in m.operating_system for m in model.machines)
+    assert inventory_view(model,None,'sites','Toulouse',0,25)['total'] == sum(s.city == 'Toulouse' for s in model.sites)
     assert not inventory_view(None,None,'users','',0,25)['available']
 
 
@@ -67,13 +67,14 @@ def test_inventory_roundtrip_parquet(tmp_path):
 def test_subsidiaries_and_geographic_filters():
     from app.business.inventory_service import inventory_view
     model = map_inventory_payload(payload())
-    assert len(model.subsidiaries) == 2
-    assert {s.country for s in model.sites} == {'France', 'Canada'}
-    alpha = inventory_view(model,None,'machines','',0,100,subsidiary='demo-subsidiary-1')
-    assert alpha['total'] == 38
-    assert all(r['subsidiary'] == 'Filiale démo Alpha' for r in alpha['rows'])
+    assert len(model.subsidiaries) == 12
+    assert {'France', 'Canada'} <= {s.country for s in model.sites}
+    subsidiary=model.subsidiaries[0]
+    alpha = inventory_view(model,None,'machines','',0,100,subsidiary=subsidiary.subsidiary_id)
+    assert alpha['total'] > 0
+    assert all(r['subsidiary'] == subsidiary.name for r in alpha['rows'])
     canada = inventory_view(model,None,'users','',0,100,country='Canada')
-    assert canada['total'] == 20
+    assert canada['total'] > 0
     assert all(r['region'] == 'Québec' for r in canada['rows'])
     assert inventory_view(model,None,'sites','',0,25,country='Canada',region='Occitanie')['total'] == 0
     raw = payload()
@@ -123,8 +124,8 @@ def test_persistence_reuses_key_and_latest_read_uses_only_latest_day():
 
 def test_host_cycles_rejected():
     raw = payload()
-    raw['inventory']['machines'][0]['host_id'] = 'demo-machine-002'
-    raw['inventory']['machines'][1]['host_id'] = 'demo-machine-001'
+    raw['inventory']['machines'][0]['host_id'] = raw['inventory']['machines'][1]['machine_id']
+    raw['inventory']['machines'][1]['host_id'] = raw['inventory']['machines'][0]['machine_id']
     with pytest.raises(ValueError,match='Cyclic host'):
         map_inventory_payload(raw)
 

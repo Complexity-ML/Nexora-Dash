@@ -43,5 +43,4 @@ def snapshot(at: datetime) -> dict:
             # Explicit fictional configuration; never infer a manager from a product name.
             "licenseManager": "other" if pool in {"flex-adobe", "flex-catia", "flex-arcgis"} else "flexnet",
             "entitlement": capacity, "consumed": used, "demoScenario": scenario})
-    from app.connectors.demo_inventory import inventory
-    return {"inventory": inventory(at), "capturedAt": at.isoformat(), "provider": "digimon-mock", "demoVersion": VERSION, "pools": pools}
+    return {"capturedAt": at.isoformat(), "provider": "digimon-mock", "demoVersion": VERSION, "pools": pools}

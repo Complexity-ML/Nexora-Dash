@@ -4,7 +4,7 @@ import pytest
 from test_collection_runner import context, collect
 from app.collection.runner import CollectionRunner
 from app.collection.quality import CoveragePolicy, CoverageRejected, compare_coverage
-from app.connectors.demo import snapshot
+from enterprise_fixture import snapshot
 
 
 def test_coverage_checks_subsidiaries_even_when_total_is_unchanged():
@@ -64,11 +64,11 @@ def test_unconfigured_floors_preserve_recovery_identity():
 
 def test_first_load_below_floor_is_archived_but_never_published(context):
     pipeline, journal = context
-    pipeline.collection_quality_policy = {'minimum_counts': {'machines': 121}}
+    pipeline.collection_quality_policy = {'minimum_counts': {'machines': 139}}
     runner = CollectionRunner(pipeline, journal)
     with pytest.raises(CoverageRejected):
         collect(runner)
     steps = journal.checkpoints(runner.run_id)
     assert set(steps) == {'bronze', 'validated'}
-    assert steps['validated']['quality']['shortfalls'] == [{'dimension':'machines', 'minimum':121, 'received':120}]
+    assert steps['validated']['quality']['shortfalls'] == [{'dimension':'machines', 'minimum':139, 'received':138}]
     assert journal.head(pipeline.store.prefix, 'digimon-mock', 'group') is None

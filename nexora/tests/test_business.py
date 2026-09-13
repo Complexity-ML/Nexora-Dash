@@ -565,7 +565,7 @@ def test_inventory_access_portfolio_and_persisted_snapshot(business):
     import pyarrow as pa
     import pyarrow.parquet as pq
     from app.dependencies import get_pipeline
-    from app.connectors.demo import snapshot
+    from enterprise_fixture import snapshot
     from app.models.inventory import map_inventory_payload
     model = map_inventory_payload(snapshot(datetime(2026,9,11,tzinfo=timezone.utc)))
     output = BytesIO()
@@ -596,7 +596,7 @@ def test_inventory_access_portfolio_and_persisted_snapshot(business):
 def test_inventory_index_scope_pagination_and_details(business):
     from datetime import datetime, timezone
     from app.business.inventory_index import publish_index,read_index
-    from app.connectors.demo import snapshot
+    from enterprise_fixture import snapshot
     from app.models.inventory import map_inventory_payload
     client, headers, base, store = business
     namespace = str(uuid4())
@@ -604,7 +604,7 @@ def test_inventory_index_scope_pagination_and_details(business):
     publish_index(store,namespace,model,'test/manifest.json')
     with store.connect() as db:
         result = read_index(db,namespace,None,'machines','',0,5,{})
-        assert result['total'] == 120 and len(result['rows']) == 5
+        assert result['total'] == 138 and len(result['rows']) == 5
         assert all('relationships' not in row for row in result['rows'])
         second = read_index(db,namespace,None,'machines','',5,5,{})
         assert not {r['machine_id'] for r in result['rows']} & {r['machine_id'] for r in second['rows']}
@@ -613,8 +613,8 @@ def test_inventory_index_scope_pagination_and_details(business):
         assert scoped['rows'] and all(r['software']==['flex-cad'] for r in scoped['rows'])
         detail = read_index(db,namespace,['flex-cad'],'users','',0,1,{},scoped['rows'][0]['user_id'])
         assert all(r['license_pool_id']=='flex-cad' for r in detail['rows'][0]['relationships'])
-        assert read_index(db,namespace,None,'users','',0,25,{'country':'Canada'})['total'] == 20
-        assert read_index(db,namespace,None,'machines','',0,25,{'kind':'virtual'})['total'] == 40
+        assert read_index(db,namespace,None,'users','',0,25,{'country':'Canada'})['total'] > 0
+        assert read_index(db,namespace,None,'machines','',0,25,{'kind':'virtual'})['total'] == 20
         assert read_index(db,'missing',None,'machines','',0,25,{}) is None
 
 
@@ -623,7 +623,7 @@ def test_inventory_software_catalog_respects_workspace(business):
     from types import SimpleNamespace
     from app.dependencies import get_pipeline
     from app.business.inventory_index import publish_index
-    from app.connectors.demo import snapshot
+    from enterprise_fixture import snapshot
     from app.models.inventory import map_inventory_payload
     client, headers, base, store = business
     namespace = str(uuid4())
@@ -638,7 +638,7 @@ def test_inventory_software_catalog_respects_workspace(business):
             db.execute('UPDATE workspace_portfolios SET all_catalog=true WHERE workspace_id=%s',(base.split('/')[-1],))
         response = client.get(base+'/inventory/software',headers=headers['reader'])
         assert response.status_code == 200
-        assert sum(row['machines'] for row in response.json()) == 120
+        assert sum(row['machines'] for row in response.json()) == 910
         assert client.get('/api/v1/business/workspaces/unknown/inventory/software',headers=headers['reader']).status_code == 404
     finally:
         if previous is None: app.dependency_overrides.pop(get_pipeline,None)

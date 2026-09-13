@@ -68,7 +68,7 @@ def test_status_bounds_quality_dimensions_without_erasing_journal(context):
 def test_corrected_same_day_resolves_alert_but_preserves_rejected_run(context):
     from app.collection.quality import CoverageRejected
     pipeline, journal = context
-    pipeline.collection_quality_policy = {'minimum_counts': {'machines':121}}
+    pipeline.collection_quality_policy = {'minimum_counts': {'machines':139}}
     rejected = CollectionRunner(pipeline, journal)
     with pytest.raises(CoverageRejected):
         collect(rejected)
@@ -76,7 +76,7 @@ def test_corrected_same_day_resolves_alert_but_preserves_rejected_run(context):
     # Publishing another day must not hide the rejection.
     collect(CollectionRunner(pipeline, journal), day=2)
     assert status(context)['issues_total'] == 1
-    from app.connectors.demo import snapshot
+    from enterprise_fixture import snapshot
     from datetime import datetime, timezone
     CollectionRunner(pipeline, journal).run(snapshot(datetime(2026,1,1,tzinfo=timezone.utc)),
         source='digimon-mock', scope='group', snapshot_id='unrelated', source_revision='1')

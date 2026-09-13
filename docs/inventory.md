@@ -42,11 +42,10 @@ conservées. Relancer un scénario identique réutilise ses partitions quotidien
 Les coûts, dossiers, comptes et relevés agrégés des pools ne sont pas réinitialisés.
 L’index présente le dernier relevé du scénario, et les fichiers quotidiens restent
 dans le lac. Une modification des données d’inventaire exige une reconstruction
-de cet index avec le script ; la synchronisation des pools est indépendante.
+de cet index avec la commande CLI ; la synchronisation des pools est indépendante.
 
-Le petit jeu de 120 machines reste disponible pour les tests et la génération
-initiale des pools. `nexora dev demo legacy-inventory` enrichit les anciens lacs de ce
-petit inventaire ; ce n’est pas le scénario d’entreprise.
+Le générateur de pools ne crée aucun inventaire de machines ou d’utilisateurs.
+Le scénario d’entreprise est publié explicitement avec la commande ci-dessus.
 
 ## Contrat DIGIMON provisoire
 

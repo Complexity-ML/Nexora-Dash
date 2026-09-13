@@ -42,3 +42,7 @@ def test_generation_preserves_existing_objects_and_reuses_daily_partitions():
     assert len([k for k in store.objects if k.startswith('silver/usage/') and 'sam-demo-v2' in k]) == 30
     with pytest.raises(ValueError): asyncio.run(pipeline.generate_demo_history(10000))
     with pytest.raises(ValueError): asyncio.run(SamPipeline(object(), store, None).generate_demo_history(30))
+
+
+def test_pool_demo_never_injects_legacy_inventory():
+    assert "inventory" not in snapshot(datetime(2026, 1, 1, tzinfo=timezone.utc))

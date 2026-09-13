@@ -17,6 +17,7 @@ from app.collection.dependencies import dependency_inventory
 from app.collection.backup import delta_backup_files
 from app.config import get_settings
 from app.connectors.demo import snapshot
+from app.connectors.enterprise_inventory import enterprise_inventory
 from app.storage.delta_tables import DeltaTables, DeltaReference
 from app.bi.auth import issue_reader, revoke_reader, authenticate_reader, BIUnauthorized, revoke_namespace_readers
 from app.bi.catalog import prepare_pool_snapshot, prepare_inventory_snapshot, prepare_license_snapshot, publish_snapshot, publication
@@ -24,11 +25,12 @@ from app.bi.catalog import prepare_pool_snapshot, prepare_inventory_snapshot, pr
 
 def restore_snapshot(at):
     raw=snapshot(at)
+    raw['inventory']=enterprise_inventory(at,employees=110,workstations=100,physical_servers=2,virtual_servers=20,contractors=16)
     # Stable synthetic license dimensions across every day of the recovery exercise.
     raw['inventory']['observations']=[]
     raw['inventory']['products']=[{'software_id':'restore-rhel','name':'Fixture RHEL','category':'operating_system'}]
     raw['inventory']['entitlements']=[{'entitlement_id':'restore-right','software_id':'restore-rhel',
-        'metric':'device','quantity':80,'subsidiary_id':'demo-subsidiary-1','synthetic':True}]
+        'metric':'device','quantity':80,'subsidiary_id':'ent-sub-01','synthetic':True}]
     return raw
 
 
@@ -89,9 +91,9 @@ def main():
         bi_pending = prepare_pool_snapshot(lake, journal, source='digimon-mock', scope='group', audience='restore-cad', pool_ids=['flex-cad'])
         stale = issue_reader(journal.store, namespace=lake.prefix, audience='restore-cad')
         inventory_bi=prepare_inventory_snapshot(lake,journal,source='digimon-mock',scope='group',
-            audience='restore-inventory',subsidiary_ids=['demo-subsidiary-1'])
+            audience='restore-inventory',subsidiary_ids=['ent-sub-01'])
         licenses_bi=prepare_license_snapshot(lake,journal,source='digimon-mock',scope='group',
-            audience='restore-licenses',software_ids=['restore-rhel'],subsidiary_ids=['demo-subsidiary-1'])
+            audience='restore-licenses',software_ids=['restore-rhel'],subsidiary_ids=['ent-sub-01'])
         for candidate in (inventory_bi,licenses_bi):
             publish_snapshot(lake,journal,candidate['snapshot_id'],expected_snapshot=None)
         revoked = issue_reader(journal.store, namespace=lake.prefix, audience='restore-cad')
@@ -182,15 +184,17 @@ def main():
         assert license_pub['snapshot_id'] == proof['licenses_bi']
         inventory_rows=list(csv.DictReader(StringIO(snapshot_csv(lake,inventory_pub['artifact'],'restore-inventory','inventory_counts'))))
         license_rows=list(csv.DictReader(StringIO(snapshot_csv(lake,license_pub['artifact'],'restore-licenses','license_entitlements'))))
-        expected_machines=sum(m['site_id']=='demo-site-1' for m in restore_snapshot(datetime(2026,1,1,tzinfo=timezone.utc))['inventory']['machines'])
+        source_inventory=restore_snapshot(datetime(2026,1,1,tzinfo=timezone.utc))['inventory']
+        sites={s['site_id'] for s in source_inventory['sites'] if s['subsidiary_id']=='ent-sub-01'}
+        expected_machines=sum(m['site_id'] in sites for m in source_inventory['machines'])
         assert sum(int(r['machines']) for r in inventory_rows) == expected_machines
-        assert {r['subsidiary_id'] for r in inventory_rows} == {'demo-subsidiary-1'}
+        assert {r['subsidiary_id'] for r in inventory_rows} == {'ent-sub-01'}
         assert len(license_rows) == 1 and license_rows[0]['quantity'] == '80' and license_rows[0]['metric'] == 'device'
         reader = PublishedCollection(lake, journal, 'digimon-mock', 'group')
         assert reader.manifest['run_id'] == proof['run_id']
         assert reader.summary().pools_total == 12
         assert reader.usage().num_rows == 12
-        assert len(reader.inventory().machines) == 120
+        assert len(reader.inventory().machines) == 138
         assert len(reader.latest_snapshot().stock) == 12
         with journal.store.connect() as db:
             count = db.execute("SELECT count(*) AS n FROM inventory_entities WHERE run_id=%s AND entity='machines'", (reader.manifest['index_run'],)).fetchone()['n']
@@ -216,7 +220,7 @@ def main():
         restored = PublishedCollection(lake, journal, 'digimon-mock', 'group')
         assert restored.usage().num_rows == 24
         assert recover_once(pipeline, journal, source='digimon-mock', scope='group') == []
-        assert count == 120
+        assert count == 138
         print(json.dumps({'phase':'verified','machines':count,'pools':12,'files_verified':len(proof['hashes']),'interrupted_run_resumed':True,'restored_observations':24,'stale_worker_detected':True,'bi_snapshots_restored':4,'inventory_and_license_csv_restored':True,'revoked_bi_access_denied':True,'post_snapshot_bi_access_denied':True,'daily_failure_restored':True,'bi_access_reconciled':True}))
 
 
