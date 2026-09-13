@@ -7,6 +7,7 @@ from app.business import inventory_service as inventory, workspace_service as bu
 
 
 def savings(ctx,query):
+    export = html.Button('Exporter CSV', id='export-table', n_clicks=0, className='button', title='Exporter les résultats de cette analyse dans votre périmètre.')
     view=query.get('view','installations')
     tabs=html.Nav([link('Usage des installations','savings'),link('Capacités des pools','savings',view='pools')],className='tabs')
     if view!='pools':
@@ -20,7 +21,7 @@ def savings(ctx,query):
             return html.Div([link('← Analyses des installations','savings'),header(selected['software_name'],'Machines sans activité observée sur la période complète.'),
                 card(table([('name','Machine'),('site','Site'),('subsidiary','Filiale')],[dict(r,name=link(r['name'],'inventory',detail=r['machine_id'],entity='machines')) for r in details['rows']])),
                 pager('savings',offset,details['total'],product=query['product'])],className='stack')
-        return html.Div([header('Coûts & économies','Examinez les usages avant de simuler les économies.'),tabs,
+        return html.Div([header('Coûts & économies','Examinez les usages avant de simuler les économies.',[export]),tabs,
             stats([('Installations analysées',number(sum(p['installations_observed'] for p in rows)),f'{report.get("days",0)} jours observés'),
                 ('Sans activité',number(sum(p['installations_without_usage'] for p in rows)),'Couverture complète'),
                 ('Relevés incomplets',number(sum(p['installations_incomplete'] for p in rows)),'Exclus des conclusions d’inactivité')]),
@@ -45,7 +46,7 @@ def savings(ctx,query):
                       field('cost-version:'+key,'Version',cost.get('version',0),kind='hidden'),
                       action('Enregistrer','cost:'+key,disabled=not ctx.writable)],className='toolbar'),
             html.P(link(f'Voir les {len(related)} dossiers →','cases',pool=key) if related else link('Ouvrir un dossier →','cases',pool=key))))
-    return html.Div([header('Coûts & économies','Simulez la valeur des capacités à examiner.'),tabs,
+    return html.Div([header('Coûts & économies','Simulez la valeur des capacités à examiner.',[export]),tabs,
         card(html.H2('Prioriser les examens'),plot(opportunity_ranking(summary.inactive),{'type':'insight-chart','key':'opportunities'})),
         html.Small('Simulation sur les pools analysés. Ces montants ne sont pas des économies réalisées.',className='muted'),*panels],className='stack')
 

@@ -20,7 +20,38 @@ def csv_document(columns, rows):
     return '\ufeff'+output.getvalue()
 
 
+def analysis_rows(context, query):
+    from app.business import inventory_service, workspace_service
+    if query.get('view') == 'pools':
+        summary = context.summary()
+        costs = {c['pool_id']: c for c in context.call(workspace_service.costs, context.wid)}
+        columns = ['Produit', 'Identifiant pool', 'Capacité à examiner', 'Coût annuel par unité (EUR)', 'Valeur annuelle simulée (EUR)', 'Nature']
+        rows = []
+        for candidate in summary.inactive:
+            cents = costs.get(candidate.license_pool_id, {}).get('annual_unit_cents')
+            rows.append([candidate.software_name, candidate.license_pool_id, candidate.recovery_potential,
+                         cents / 100 if cents is not None else None,
+                         candidate.recovery_potential * cents / 100 if cents is not None else None,
+                         'Simulation, sans gain réalisé'])
+        return columns, rows
+    report = context.call(inventory_service.installation_usage, context.wid, lake=True)
+    columns = ['Produit', 'Identifiant logiciel', 'Identifiant pool', 'Installations observées',
+               'Avec activité', 'Sans activité avec couverture complète', 'Relevés incomplets',
+               'Début de période', 'Fin de période', 'Jours analysés']
+    items = report.get('products', [])
+    if query.get('product'):
+        items = [p for p in items if (p.get('software_id') or p.get('license_pool_id')) == query['product']]
+    return columns, [[p['software_name'], p.get('software_id'), p.get('license_pool_id'),
+                      p['installations_observed'], p['installations_active'], p['installations_without_usage'],
+                      p['installations_incomplete'], report.get('period_start'), report.get('period_end'), report.get('days')]
+                     for p in sorted(items, key=lambda p: p['installations_without_usage'], reverse=True)]
+
+
 def export_table(context, page, query):
+    if page == 'savings':
+        columns, rows = analysis_rows(context, query)
+        kind = 'capacites' if query.get('view') == 'pools' else 'installations'
+        return {'content':csv_document(columns,rows),'filename':f'nexora-analyses-{kind}.csv','type':'text/csv;charset=utf-8','base64':False}
     if page not in ('software','licenses'):
         raise BusinessError(400,'Cette vue ne propose pas d’export tabulaire.')
     items=products(context,include_installations=page=='software')

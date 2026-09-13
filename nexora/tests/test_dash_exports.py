@@ -45,3 +45,37 @@ def test_csv_source_text_cannot_become_a_formula():
     assert rows[1]==['\' =HYPERLINK("bad")','-2']
     assert rows[2]==["'@formula",'0']
     assert rows[3]==['Normal; quoted','']
+
+
+def test_analysis_export_keeps_unknown_cost_distinct_from_zero():
+    from types import SimpleNamespace
+    from app.business import workspace_service
+    class AnalysisContext:
+        wid='space'
+        def summary(self):
+            return SimpleNamespace(inactive=[SimpleNamespace(software_name=name,license_pool_id=name,recovery_potential=4) for name in ('Missing','Free','Paid')])
+        def call(self, function, wid):
+            assert function is workspace_service.costs and wid==self.wid
+            return [{'pool_id':'Free','annual_unit_cents':0},{'pool_id':'Paid','annual_unit_cents':125}]
+    rows=parse(export_table(AnalysisContext(),'savings',{'view':'pools'}))
+    assert rows[1][3:5]==['','']
+    assert rows[2][3:5]==['0.0','0.0']
+    assert rows[3][3:5]==['1.25','5.0']
+    assert all(r[-1]=='Simulation, sans gain réalisé' for r in rows[1:])
+
+
+def test_installation_analysis_export_preserves_coverage_and_access_denial():
+    from app.business import inventory_service
+    class AnalysisContext:
+        wid='scoped-space'
+        def call(self, function, wid, **kwargs):
+            assert function is inventory_service.installation_usage and wid==self.wid and kwargs=={'lake':True}
+            return {'period_start':'2026-01-01','period_end':'2026-01-31','days':31,'products':[
+                {'software_name':'OS','software_id':'os','license_pool_id':None,'installations_observed':10,
+                 'installations_active':7,'installations_without_usage':1,'installations_incomplete':3}]}
+    rows=parse(export_table(AnalysisContext(),'savings',{}))
+    assert rows[1]==['OS','os','','10','7','1','3','2026-01-01','2026-01-31','31']
+    assert len(parse(export_table(AnalysisContext(),'savings',{'product':'outside'})))==1
+    class Revoked(AnalysisContext):
+        def call(self,*args,**kwargs): raise BusinessError(403,'Revoked')
+    with pytest.raises(BusinessError): export_table(Revoked(),'savings',{})

@@ -11,6 +11,7 @@
 - Vue d’ensemble : comparaison filiales × systèmes, en volumes ou en parts du parc ; clic sur les distributions pour filtrer la comparaison sur place. Les cartes de redirection intermédiaires ont été retirées.
 - Navigation depuis les autres graphiques vers les éléments correspondants ; clic sur les VM vérifié dans la démonstration.
 - Export CSV du catalogue et des licences : recherche et périmètre courants, toutes les pages, lignes par filiale et unité, droits revérifiés au téléchargement.
+- Export CSV des analyses d’installations et des simulations de capacité : couverture et période conservées, coûts absents distincts de zéro, contrôle d’accès au téléchargement.
 - Export HTML imprimable d’un dossier via Dash avec vérification d’accès au téléchargement.
 - Catalogue consultable sans analyses Gold ; détails des licences chargés à l’ouverture et liste paginée.
 
