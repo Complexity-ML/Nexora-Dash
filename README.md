@@ -40,7 +40,15 @@ docker compose up -d --build
 Interface : http://localhost:8050. Console MinIO : http://localhost:9001.
 Les secrets restent dans le fichier `.env` local, exclu de Git. Les comptes de démonstration utilisent `SAM_DEMO_PASSWORD`.
 
-Une installation neuve ne contient pas automatiquement le scénario d’entreprise. Le stockage et les traitements doivent être initialisés avec les scripts de démonstration avant de consulter les analyses.
+Sur une installation neuve, la connexion fonctionne avant la publication des analyses. Pour créer le petit jeu de référence (12 pools, un an d’historique fictif et son inventaire) :
+
+```sh
+docker compose exec -e DEMO_TOOLS_ENABLED=true dash python -m scripts.initialize_demo
+```
+
+Cette commande prépare une génération séparée, valide les résultats puis les publie. Elle refuse un lac déjà alimenté et ne supprime pas de données. Actualiser ensuite la page Dash. Le scénario d’entreprise de 138 500 machines constitue un chargement distinct, plus volumineux ; il n’est pas lancé automatiquement.
+
+Comptes disponibles : `admin@sam.demo`, `analyst@sam.demo` et `reader@sam.demo`. Leur mot de passe est la valeur locale `SAM_DEMO_PASSWORD` générée dans `.env`. Ne pas exposer ces comptes de démonstration sur Internet.
 
 ## Développement
 
@@ -56,6 +64,6 @@ Les tests nécessitent PostgreSQL et, pour les tests Spark, Java. Utiliser une b
 
 ## État de la migration
 
-Migration en cours : les parcours métier ont été portés vers Dash et testés localement. La finition visuelle, la validation complète de la nouvelle image Docker et la mise à jour de toute la documentation restent en cours. Certains guides et scripts hérités décrivent encore l’ancienne application ; ils ne constituent pas le contrat de cette version.
+Migration en cours : les parcours métier ont été portés vers Dash et testés localement. La vérification complète des parcours et les finitions restent en cours. Les preuves de validation et les fonctions restant à terminer sont détaillées dans [le suivi de migration](docs/migration-dash.md).
 
 Les données affichées sont fictives. Le raccordement DIGIMON réel et la validation Power BI sur le réseau cible restent à effectuer. Les économies affichées sont des simulations, pas des gains réalisés.

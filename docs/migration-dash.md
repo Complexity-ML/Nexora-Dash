@@ -14,6 +14,7 @@
 
 - Périmètre logiciel en cartes cochables avec recherche et actions groupées, sans menu géant.
 - Analyse annuelle : dispersion des usages, durée des pics et évolution relative des capacités.
+- Initialisation explicite d’un lac de démonstration vide, avec validation avant publication et refus d’une seconde initialisation.
 - Supervision des journées publiées et des processus de collecte et de reprise ; profil Docker `collection` autonome.
 
 ## Preuves de validation
@@ -22,14 +23,15 @@ Les tests `test_dash.py` exercent les callbacks, sessions, refus d’accès, not
 
 `verify_dash_pages.py` construit les pages avec les services et données de la démonstration. Il ne prouve pas à lui seul que tous les états visuels sont corrects. Les tests PostgreSQL utilisent une base isolée, distincte de la démonstration.
 
+L’installation a aussi été démarrée sur un projet Compose isolé, avec de nouveaux volumes PostgreSQL et MinIO. La connexion et l’état sans publication ont été vérifiés dans le navigateur. La commande d’initialisation a publié 12 pools et 4 380 relevés journaliers validés. Une deuxième tentative a été refusée. Les 14 pages ont ensuite été construites avec ces données via `verify_dash_pages.py` ; cela ne vaut pas une revue visuelle complète des 14 pages. L’environnement de test a été retiré après validation.
+
 ## À terminer avant clôture
 
 - Vérification finale des guides et commandes sur une installation neuve ; les guides d’exploitation, de BI et de parcours décrivent désormais Dash et les services Python.
 - Compléter les exports des autres vues et vérifier les fonctions de confort de l’ancienne interface.
 - Compléter les vues économiques interactives. Le suivi des collectes est désormais accessible aux opérateurs dans la page Data Lake.
 - Vérifier tous les parcours métier et graphiques dans le navigateur, avec plusieurs largeurs et des espaces à périmètre partiel.
-- Vérifier visuellement les états sans espace ou sans publication ; les parcours sont désormais couverts par les tests de callbacks et de pages.
-- Valider le démarrage d’une installation neuve avec ses données de démonstration.
+- Vérifier visuellement l’état sans espace. L’état sans publication est vérifié sur l’installation neuve ; les deux parcours sont couverts par les tests de callbacks et de pages.
 - Préparer la livraison finale et son archive source.
 
 Le raccordement DIGIMON réel, l’intégration dans son portail et Power BI sur le réseau cible restent des validations externes. Les chiffres présentés sont fictifs et les économies sont des simulations. La migration ne doit pas être déclarée terminée sur la seule base des tests unitaires.

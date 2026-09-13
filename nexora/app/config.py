@@ -40,7 +40,6 @@ class Settings(BaseSettings):
     spark_master: str = "local[*]"
     underutilization_threshold: float = 0.35
     recovery_buffer_rate: float = 0.10
-    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
 
 @lru_cache
