@@ -156,6 +156,9 @@ def test_plotly_click_navigates_only_to_allowed_detail_pages(dash_context):
     response=click('#/software?pool=flex-cad')
     assert response.status_code==200
     assert response.json['response']['location']['hash']=='#/software?pool=flex-cad'
+    response=click('#/overview?subsidiary=SED&comparison=share')
+    assert response.status_code==200
+    assert response.json['response']['location']['hash']=='#/overview?subsidiary=SED&comparison=share'
     assert click('https://example.invalid').status_code==204
     assert click('#/settings').status_code==204
 

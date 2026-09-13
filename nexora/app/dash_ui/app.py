@@ -208,7 +208,7 @@ def create_app(*, testing=False, store=None):
         target=selected['points'][0].get('customdata')
         if not isinstance(target,str) or not target.startswith('#/'):raise PreventUpdate
         page,_=parse_location(target)
-        if page not in ('software','savings','licenses','explore'):raise PreventUpdate
+        if page not in ('overview','software','savings','licenses','explore'):raise PreventUpdate
         return target
     @app.callback(Output('portfolio-selection','style'),Output('portfolio-all-note','style'),
         Input({'type':'field','key':'portfolio-mode'},'value'))
