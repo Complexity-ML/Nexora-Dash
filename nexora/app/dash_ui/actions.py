@@ -56,10 +56,10 @@ def execute(name, values):
         key=name.split(':',1)[1]
         ctx.call(business.save_cost,ctx.wid,key,business.CostUpdate(version=values['cost-version:'+key],annual_unit_cents=cents(values['cost:'+key])))
     elif name=='case-create':
-        from app.dash_ui.pages.software import products
-        product=next((p for p in products(ctx,False) if (p.get('license_pool_id') or p['software_id'])==values['case-product']),None)
+        from app.dash_ui.pages.cases import case_options
+        product=next((p for p in case_options(ctx) if p['value']==values['case-product']),None)
         if not product: raise BusinessError(422,'Sélectionnez un produit de votre périmètre.')
-        result=ctx.call(business.create_case,ctx.wid,business.CaseCreate(pool_id=values['case-product'],title=values.get('case-title') or 'Examen '+product['name'],quantity=values['case-quantity'],evidence=values['case-evidence']))
+        result=ctx.call(business.create_case,ctx.wid,business.CaseCreate(pool_id=values['case-product'],title=values.get('case-title') or 'Examen '+product['label'],quantity=values['case-quantity'],evidence=values['case-evidence']))
         return 'Dossier créé.',route('cases',id=result['id'])
     elif name=='case-update':
         ctx.call(business.update_case,ctx.wid,values['case-id'],business.CaseUpdate(version=values['case-version'],assignee_id=values.get('case-assignee') or None,quantity=values['case-quantity'],annual_unit_cents=cents(values['case-cost']) or 0))

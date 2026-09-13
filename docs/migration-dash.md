@@ -25,6 +25,8 @@
 - Initialisation explicite d’un lac de démonstration vide, avec validation avant publication et refus d’une seconde initialisation.
 - Supervision des journées publiées et des processus de collecte et de reprise ; profil Docker `collection` autonome.
 
+- Dossiers : les pools disposant d’une analyse restent sélectionnables même avant la remontée des installations ; formulaire et création utilisent la même liste dans le périmètre autorisé.
+
 ## Preuves de validation
 
 Les tests `test_dash.py` exercent les callbacks, sessions, refus d’accès, notes, formulaires membres, navigation Plotly et export de dossier. `test_dash_charts.py` contrôle les journées manquantes et les populations non additives. `test_dash_software.py` couvre le catalogue sans Gold et la pagination des licences. `test_published_analytics.py` vérifie que la lecture ne lance ni collecte ni calcul.
@@ -32,6 +34,8 @@ Les tests `test_dash.py` exercent les callbacks, sessions, refus d’accès, not
 `verify_dash_pages.py` construit les pages avec les services et données de la démonstration. Il ne prouve pas à lui seul que tous les états visuels sont corrects. Les tests PostgreSQL utilisent une base isolée, distincte de la démonstration.
 
 L’installation a aussi été démarrée sur un projet Compose isolé, avec de nouveaux volumes PostgreSQL et MinIO. La connexion et l’état sans publication ont été vérifiés dans le navigateur. La commande d’initialisation a publié 12 pools et 4 380 relevés journaliers validés. Une deuxième tentative a été refusée. Les 14 pages ont ensuite été construites avec ces données via `verify_dash_pages.py` ; cela ne vaut pas une revue visuelle complète des 14 pages. L’environnement de test a été retiré après validation.
+
+Dans une démonstration QA isolée, le parcours navigateur a vérifié un coût annuel de 100 €, la création d’un dossier de 10 unités (hypothèse de 1 000 €), puis l’ajout et la conservation d’une note après rechargement. Le filtre Autodesk de l’analyse annuelle a aussi été vérifié sur 4 380 relevés publiés. Ces vérifications ne couvrent pas encore tous les rôles et toutes les vues d’installations.
 
 ## À terminer avant clôture
 

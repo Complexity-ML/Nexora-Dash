@@ -1,17 +1,36 @@
 from dash import html
 from app.business import workspace_service as service
+from app.business.errors import BusinessError
 from app.dash_ui.components import header, card, link, table, money, field, action, empty, stats, number
 from app.dash_ui.pages.software import products
 
 STATUS={'preparing':'À examiner','in_progress':'En cours','completed':'Terminé','sent':'Transmis','response_received':'Retour reçu'}
 
 
+def case_options(ctx):
+    catalog=products(ctx,False)
+    opts=[{'label':p['name'],'value':p.get('license_pool_id') or p['software_id']} for p in catalog]
+    # A capacity publication can precede the installation inventory. Such pools
+    # remain valid case subjects; the summary already applies the workspace scope.
+    try:
+        trends = ctx.summary().trends
+    except BusinessError as exc:
+        if exc.status_code != 409:
+            raise
+        trends = []
+    known = {option['value'] for option in opts}
+    for trend in trends:
+        if trend.license_pool_id not in known:
+            opts.append({'label':trend.software_name,'value':trend.license_pool_id})
+            known.add(trend.license_pool_id)
+    return opts
+
+
 def layout(ctx,query):
     if query.get('id'): return detail(ctx,query['id'])
     rows=ctx.call(service.cases,ctx.wid)
     if query.get('pool'): rows=[r for r in rows if r['pool_id']==query['pool']]
-    catalog=products(ctx,False)
-    opts=[{'label':p['name'],'value':p.get('license_pool_id') or p['software_id']} for p in catalog]
+    opts=case_options(ctx)
     selected=query.get('pool') or (opts[0]['value'] if opts else None)
     return html.Div([header('Dossiers','Partagez vos analyses et suivez les actions décidées.',[html.Button('Exporter CSV',id='export-table',n_clicks=0,className='button')]),
         stats([('Dossiers',number(len(rows)),'Dans cet espace'),('En cours',number(sum(r['status']=='in_progress' for r in rows)),'Examens engagés')]),
