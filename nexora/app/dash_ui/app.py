@@ -234,6 +234,12 @@ def create_app(*, testing=False, store=None):
         current=set(selected or [])
         return sorted(current|keys if trigger.triggered_id=='portfolio-select' else current-keys)
 
+    # Complete Dash's lazy resource registration before Gunicorn accepts concurrent
+    # requests. Otherwise another thread can serve a script while setup is partial.
+    # The root layout is static: this does not authenticate or read the lake.
+    with server.test_client() as startup_client:
+        if startup_client.get('/_dash-layout').status_code != 200:
+            raise RuntimeError('Dash component initialization failed')
     return app
 
 

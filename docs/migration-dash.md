@@ -2,6 +2,8 @@
 
 ## En place
 
+- Menu mobile repliable avec page courante et déconnexion accessibles ; rendu des analyses contrôlé à 390 et 768 px.
+- Initialisation des composants terminée avant les requêtes concurrentes des workers, sans lecture métier ni calcul Spark.
 - Application Dash/Plotly servie par Gunicorn, image Python autonome sans FastAPI.
 - Services métier appelés directement par les callbacks ; contrôles des sessions, espaces, rôles et versions conservés.
 - Inventaire, catalogue, licences, analyses, coûts, dossiers et notes accessibles dans Dash.

@@ -110,3 +110,13 @@
    suppresses <extra>. Keep its text and background in the same dark theme. */
 .js-plotly-plot .hoverlayer .hovertext rect{fill:#18232e!important;fill-opacity:1!important;stroke:#8dc4e7!important}
 .js-plotly-plot .hoverlayer .hovertext .name{fill:#f3f7fb!important}
+
+/* Keep the page reachable without scrolling through every menu on a phone. */
+.mobile-navigation{display:none}
+@media(max-width:700px){
+  .sidebar .desktop-navigation{display:none}
+  .mobile-navigation{display:block;margin:0}
+  .mobile-navigation>summary{padding:12px;border:1px solid var(--border);border-radius:7px;font-weight:600}
+  .mobile-navigation nav{padding-top:16px}
+  .sidebar-footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+}

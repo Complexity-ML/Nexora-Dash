@@ -27,6 +27,8 @@ ne permet pas de conclure à l’inactivité.
 - Parcours métier et callbacks Dash : espaces, membres, coûts, dossiers, notes, export,
   isolation, droits lecteur et révocation de session sur une base de tests dédiée.
 
+Le chargement parallèle des scripts est couvert par `test_dash_startup.py`. Le rechargement après déploiement, le menu mobile à 390 px, les analyses à 768 px et le filtre RHEL sur place dans la vue d’ensemble ont été vérifiés dans le navigateur.
+
 Les parcours catalogue, périmètre, inventaire, analyses et examen des installations
 RHEL ont aussi été inspectés dans le navigateur. Les tests ne remplacent pas
 la vérification visuelle après une modification d’interface.

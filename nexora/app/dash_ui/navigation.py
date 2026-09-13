@@ -33,4 +33,10 @@ def navigation(pages,active):
             links.append(dcc.Link([html.Img(src='data:image/svg+xml,'+quote(svg),alt='',className='nav-icon'),html.Span(pages[key][0])],
                 href=route(key),className='nav-item active' if key==active else 'nav-item'))
         groups.append(html.Section([html.H2(title,className='nav-heading'),*links],className='nav-group'))
-    return html.Nav(groups,**{'aria-label':'Navigation principale'})
+    return html.Div([
+        html.Nav(groups,className='desktop-navigation',**{'aria-label':'Navigation principale'}),
+        html.Details([
+            html.Summary('Navigation · '+pages[active][0]),
+            html.Nav(groups,**{'aria-label':'Navigation mobile'})
+        ],className='mobile-navigation')
+    ],className='navigation-container')
