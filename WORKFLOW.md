@@ -1,9 +1,9 @@
 # Développer Nexora-Dash
 
-- `backend/app/dash_ui/` : pages, composants, styles et callbacks Dash.
-- `backend/app/business/` : services et contrôles d’accès métier.
-- `backend/app/collection/` : journal et reprise des collectes.
-- `backend/tests/` : tests Python et scénarios métier.
+- `nexora/app/dash_ui/` : pages, composants, styles et callbacks Dash.
+- `nexora/app/business/` : services et contrôles d’accès métier.
+- `nexora/app/collection/` : journal et reprise des collectes.
+- `nexora/tests/` : tests Python et scénarios métier.
 
 Les callbacks appellent directement les services Python. Les traitements Spark s’exécutent indépendamment de la navigation. Les lectures analytiques utilisent une publication du lac validée.
 

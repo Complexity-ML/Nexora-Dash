@@ -38,7 +38,7 @@ services:
       timeout: 3s
       retries: 20
   dash:
-    build: ./backend
+    build: ./nexora
     image: nexora-dash:local
     environment:
       <<: *lake-environment
@@ -59,7 +59,7 @@ services:
       postgres: {condition: service_healthy}
   recovery-worker:
     profiles: [recovery]
-    build: ./backend
+    build: ./nexora
     image: nexora-dash:local
     environment: *lake-environment
     command: [python, -m, scripts.recover_collections, --watch, --limit, '10', --interval, '300', --max-interval, '3600']

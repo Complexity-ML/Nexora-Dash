@@ -44,10 +44,10 @@ Une installation neuve ne contient pas automatiquement le scénario d’entrepri
 
 ## Développement
 
-Le code Dash se trouve dans `backend/app/dash_ui`, les services métier dans `backend/app/business`, et les traitements dans `backend/app/services` et `backend/app/collection`.
+Le code Dash se trouve dans `nexora/app/dash_ui`, les services métier dans `nexora/app/business`, et les traitements dans `nexora/app/services` et `nexora/app/collection`.
 
 ```sh
-cd backend
+cd nexora
 pip install -r requirements.txt
 python -m app.dash_ui.app
 ```

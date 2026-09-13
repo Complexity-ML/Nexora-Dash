@@ -37,7 +37,8 @@ def execute(name, values):
         return 'Espace créé. Sélectionnez son périmètre.',route('portfolio')
     elif name in ('member-add','account-create') or name.startswith('member-save:'):
         suffix=':'+name.split(':',1)[1] if name.startswith('member-save:') else ''
-        data=dict(email=values['member-email'+suffix],role=values['member-role'+suffix])
+        prefix='account' if name=='account-create' else 'member'
+        data=dict(email=values[prefix+'-email'+suffix],role=values[prefix+'-role'+suffix])
         if name=='account-create':
             ctx.call(business.create_account,ctx.wid,business.AccountCreate(**data,name=values['account-name'],password=values['account-password']))
         else: ctx.call(business.set_member,ctx.wid,business.Member(**data))

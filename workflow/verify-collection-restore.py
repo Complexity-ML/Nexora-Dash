@@ -15,7 +15,7 @@ def main():
     parser.add_argument('--docker', default='docker')
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[1]
-    sys.path.insert(0,str(repo/'backend'))
+    sys.path.insert(0,str(repo/'nexora'))
     from app.collection.backup_archive import digest,seal_archive,verify_archive
     prefix = [args.docker, 'compose']
     source = 'restore_source_' + uuid4().hex
@@ -32,13 +32,13 @@ def main():
             db_tool('createdb', target)
             def backend(database, command):
                 run(['run', '--rm', '--no-deps', '-e', 'COLLECTION_ENABLED=false',
-                    '-e', 'RESTORE_TEST_DATABASE=' + database, '-v', str(repo/'backend')+':/app',
-                    '-v', str(root)+':/restore-proof', 'backend', 'sh', '-c',
+                    '-e', 'RESTORE_TEST_DATABASE=' + database, '-v', str(repo/'nexora')+':/app',
+                    '-v', str(root)+':/restore-proof', 'dash', 'sh', '-c',
                     'export DATABASE_URL="${DATABASE_URL%/*}/$RESTORE_TEST_DATABASE"; ' + command])
             backend(source, 'python -m alembic upgrade head && python -m scripts.verify_collection_restore seed --root /restore-proof')
             holder = subprocess.Popen(prefix + ['run', '--rm', '--no-deps', '-T',
-                '-e', 'RESTORE_TEST_DATABASE='+source, '-v', str(repo/'backend')+':/app',
-                'backend', 'sh', '-c', 'export DATABASE_URL="${DATABASE_URL%/*}/$RESTORE_TEST_DATABASE"; exec python -m scripts.hold_backup_snapshot --namespace restore-proof/'],
+                '-e', 'RESTORE_TEST_DATABASE='+source, '-v', str(repo/'nexora')+':/app',
+                'dash', 'sh', '-c', 'export DATABASE_URL="${DATABASE_URL%/*}/$RESTORE_TEST_DATABASE"; exec python -m scripts.hold_backup_snapshot --namespace restore-proof/'],
                 cwd=repo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=0)
             if not select.select([holder.stdout], [], [], 30)[0]:
                 raise RuntimeError('Backup snapshot holder did not become ready')

@@ -214,7 +214,7 @@ courante. Les tests activent ce parcours dans des espaces isolés uniquement.
 
 ### Import de l’historique existant dans le journal
 
-`python -m scripts.import_collection_history` (depuis `backend/`) prépare une publication à partir des
+`python -m scripts.import_collection_history` (depuis `nexora/`) prépare une publication à partir des
 versions Delta et de l’index existants. Il ne copie pas les observations et ne change
 aucun pointeur actif pendant cette préparation. Le dernier stock doit correspondre
 à un relevé Bronze archivé ; les quantités ne sont pas déduites des installations.
@@ -397,7 +397,7 @@ périodique de la reprise et la temporisation progressive des échecs techniques
 
 ### Worker périodique de reprise
 
-Après migration et activation validée du mode journalisé, lancer depuis `backend/` :
+Après migration et activation validée du mode journalisé, lancer depuis `nexora/` :
 
 ```sh
 python -m scripts.recover_collections --watch --limit 10 --interval 300 --max-interval 3600

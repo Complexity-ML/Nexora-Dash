@@ -1,82 +1,44 @@
-# Installation et développement
+# Développement local
 
-## Option recommandée : Docker Compose
+Le dossier `nexora/` contient toute l’application Python, y compris l’interface Dash.
 
-Prérequis : Docker avec le plugin Compose.
+## Docker
 
 ```sh
-cp frontend/.env.example frontend/.env.local
-docker compose up --build
+python3 workflow/init-local-env.py
+docker compose up -d --build
 ```
 
-Services disponibles :
+Dash : http://localhost:8050. MinIO : http://localhost:9001. PostgreSQL reste sur le réseau interne. Les secrets générés sont dans `.env`, exclu de Git. Configurer les identifiants MinIO pour tout environnement partagé.
 
-| Service       | Adresse                 | Rôle                           |
-| ------------- | ----------------------- | ------------------------------ |
-| SAMUI         | `http://localhost:5173` | Interface web                  |
-| FastAPI       | `http://localhost:8000` | API et `/docs` OpenAPI         |
-| MinIO S3      | `http://localhost:9000` | Endpoint objet                 |
-| MinIO Console | `http://localhost:9001` | Inspection locale des datasets |
+L’image démarre les migrations PostgreSQL puis Gunicorn sur `app.main:server`. La clé de session est conservée dans le volume `dash-session`. Préserver ce volume lors des mises à jour pour conserver les sessions. Les cookies doivent être sécurisés (`DASH_COOKIE_SECURE=true`) derrière HTTPS.
 
-Les identifiants MinIO du Compose sont publics et destinés exclusivement au développement local.
-
-## Lancement manuel
-
-MinIO doit déjà être accessible.
+## Python local
 
 ```sh
-# Terminal backend
-cd backend
-cp .env.example .env
-python -m venv .venv
+cd nexora
+python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-
-# Terminal frontend, depuis la racine
-cp frontend/.env.example frontend/.env.local
-npm --prefix frontend install
-npm --prefix frontend run dev
 ```
 
-Le backend nécessite Java pour exécuter PySpark. L'image `backend/Dockerfile` installe un runtime Java headless.
-
-## Variables backend
-
-| Variable                     | Défaut                  | Description                                     |
-| ---------------------------- | ----------------------- | ----------------------------------------------- |
-| `SAM_DATA_SOURCE`            | `mock`                  | `mock` ou `digimon`                             |
-| `DIGIMON_BASE_URL`           | vide                    | URL serveur DIGIMON, jamais exposée au frontend |
-| `DIGIMON_TIMEOUT`            | `10`                    | Timeout HTTP en secondes                        |
-| `S3_ENDPOINT_URL`            | `http://localhost:9000` | Endpoint S3/MinIO                               |
-| `S3_ACCESS_KEY`              | local                   | Clé S3 serveur                                  |
-| `S3_SECRET_KEY`              | local                   | Secret S3 serveur                               |
-| `S3_BUCKET`                  | `sam-data`              | Bucket Bronze/Silver/Gold                       |
-| `S3_REGION`                  | `us-east-1`             | Région client S3                                |
-| `SPARK_MASTER`               | `local[*]`              | Master Spark local ou distant                   |
-| `UNDERUTILIZATION_THRESHOLD` | `0.35`                  | Seuil moyen de sous-utilisation                 |
-| `RECOVERY_BUFFER_RATE`       | `0.10`                  | Réserve appliquée au maximum observé            |
-| `CORS_ORIGINS`               | frontend local          | Origines autorisées, séparées par des virgules  |
-
-Le frontend ne reçoit que `VITE_SAM_API_BASE_URL`. Toute variable `VITE_*` est intégrée au bundle public : ne jamais y placer un token, mot de passe ou certificat.
-
-## Mode démonstration
-
-Avec `SAM_DATA_SOURCE=mock`, le premier appel analytique initialise 120 jours si Silver est vide. Les appels suivants réutilisent cet historique. En mode `digimon`, cette initialisation est désactivée et aucune donnée artificielle n'est créée.
-
-Pour repartir de zéro avec Docker :
+Configurer les variables de `.env.example` pour PostgreSQL et MinIO. Pour une exécution hors conteneur, définir `DASH_SECRET_FILE` vers un fichier local accessible en écriture. Ensuite :
 
 ```sh
-docker compose down -v
-docker compose up --build
+alembic upgrade head
+python -m app.dash_ui.app
 ```
 
-## Contrôles
+La base et le lac doivent être initialisés séparément. L’interface ne fabrique pas de résultats lors d’une consultation. Les scripts de collecte et de génération se trouvent dans `nexora/scripts/`.
+
+## Tests
+
+Utiliser une base PostgreSQL jetable et distincte de la démonstration. Définir `DATABASE_URL` et `BUSINESS_TEST_DATABASE_URL` vers cette base, puis :
 
 ```sh
-(cd backend && pytest)
-npm --prefix frontend test
-npm --prefix frontend run lint
-npm --prefix frontend run build
-docker compose config
+cd nexora
+alembic upgrade head
+pytest -q
 ```
+
+Java est nécessaire aux tests Spark. Les tests MinIO demandant une configuration explicite peuvent être ignorés lorsqu’elle est absente. Le rendu visuel reste à vérifier dans le navigateur, avec les menus ouverts et plusieurs largeurs d’écran.

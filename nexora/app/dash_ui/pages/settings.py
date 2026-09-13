@@ -13,7 +13,7 @@ def layout(ctx,query):
     rows=[]
     for m in members:
         rows.append({'name':html.Div([html.Strong(m['name']),html.Small(m['email'])]),
-            'role':field('member-role:'+m['id'],'Rôle',m['role'],options=ROLES,disabled=not admin),
+            'role':field('member-role:'+m['id'],'Rôle',m['role'],options=ROLES,searchable=False,maxHeight=240,optionHeight=42,disabled=not admin),
             'action':html.Div([field('member-email:'+m['id'],'E-mail',m['email'],kind='hidden'),
                 field('member-original:'+m['id'],'Rôle',m['role'],kind='hidden'),
                 action('Enregistrer','member-save:'+m['id'],disabled=not admin),
@@ -22,10 +22,19 @@ def layout(ctx,query):
         html.Div([card(html.H2('Votre profil'),field('profile-name','Nom affiché',ctx.user['name']),action('Enregistrer','profile-save')),
                   card(html.H2('Espace de travail'),field('workspace-name','Nom',ctx.workspace['name']),action('Renommer','workspace-save',disabled=not admin))],className='settings-profile'),
         card(html.H2('Membres'),table([('name','Membre'),('role','Rôle'),('action','')],rows),
-            html.Details([html.Summary('Ajouter un membre'),html.Div([field('member-email','Adresse e-mail',''),
-                field('member-role','Rôle','reader',options=ROLES),action('Ajouter un compte existant','member-add',disabled=not admin),
-                field('account-name','Nom du nouveau compte',''),field('account-password','Mot de passe initial','',kind='password'),
-                action('Créer et ajouter le compte','account-create',disabled=not admin)],className='form-grid')]),className='members-card'),
+            html.Details([html.Summary('Ajouter un membre'),
+                html.Div([
+                    html.Section([html.H3('Compte existant'),
+                        field('member-email','Adresse e-mail','',kind='email'),
+                        field('member-role','Rôle','reader',options=ROLES,searchable=False,maxHeight=240,optionHeight=42),
+                        action('Ajouter à l’espace','member-add',disabled=not admin)],className='member-form'),
+                    html.Section([html.H3('Nouveau compte'),
+                        field('account-name','Nom affiché','',autoComplete='off'),
+                        field('account-email','Adresse e-mail','',kind='email',autoComplete='off'),
+                        field('account-role','Rôle','reader',options=ROLES,searchable=False,maxHeight=240,optionHeight=42),
+                        field('account-password','Mot de passe initial','',kind='password',autoComplete='new-password'),
+                        action('Créer et ajouter','account-create',disabled=not admin)],className='member-form')
+                ],className='member-forms')]),className='members-card'),
         card(html.H2('Seuils d’analyse'),html.P('Les nouvelles valeurs seront utilisées lors du prochain traitement du lac.'),
             html.Div([field('threshold','Sous-utilisation (%)',prefs['threshold']*100,kind='number',min=.1,max=100),
                 field('reserve','Réserve (%)',prefs['buffer']*100,kind='number',min=0,max=100),

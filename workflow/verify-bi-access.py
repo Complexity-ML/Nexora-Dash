@@ -13,7 +13,7 @@ def main():
     parser.add_argument('--docker', default='docker')
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[1]
-    sys.path.insert(0, str(repo/'backend'))
+    sys.path.insert(0, str(repo/'nexora'))
     from scripts.bi_s3_policy import policy
     name = 'bi-proof-' + uuid4().hex
     secret = secrets.token_urlsafe(32)
@@ -50,7 +50,7 @@ first=tables.replace('gold/bi/usage',pa.table({'used':[10]}))
 second=tables.replace('gold/bi/usage',pa.table({'used':[20]}))
 assert first.version==0 and second.version==1
 """
-        execute(['run', '--rm', '--no-deps', '-T', '-v', str(repo/'backend')+':/app', 'backend', 'python', '-c', seed],
+        execute(['run', '--rm', '--no-deps', '-T', '-v', str(repo/'nexora')+':/app', 'dash', 'python', '-c', seed],
                 json.dumps({'bucket':name}).encode())
         code = '''
 import json,sys
@@ -84,7 +84,7 @@ assert tables.read(DeltaReference('gold/bi/usage',0)).to_pylist()==[{'used':10}]
 assert tables.read(tables.latest('gold/bi/usage')).to_pylist()==[{'used':20}]
 print(json.dumps({'gold_read':True,'gold_list':True,'delta_pinned_version':0,'delta_latest_version':1,'denied':list(checks)}))
 '''
-        result = execute(['run', '--rm', '--no-deps', '-T', '-v', str(repo/'backend')+':/app', 'backend', 'python', '-c', code],
+        result = execute(['run', '--rm', '--no-deps', '-T', '-v', str(repo/'nexora')+':/app', 'dash', 'python', '-c', code],
                          json.dumps({'key':name, 'secret':secret, 'bucket':name}).encode())
         print(result.stdout.decode().strip())
     finally:

@@ -4,7 +4,7 @@ Le contrat réel de l'API Node.js DIGIMON n'est pas connu. Le chemin présent da
 
 ## Frontière d'intégration
 
-Tous les détails fournisseur doivent rester dans `backend/app/connectors/digimon.py` :
+Tous les détails fournisseur doivent rester dans `nexora/app/connectors/digimon.py` :
 
 - `HttpDigimonConnector.get_raw_snapshot()` : URL, méthode, paramètres et authentification serveur ;
 - `map_digimon_payload()` : traduction du payload vers `UsageSnapshot`, `LicenseUsage` et `LicenseStock`.

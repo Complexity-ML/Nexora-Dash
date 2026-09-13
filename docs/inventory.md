@@ -105,7 +105,7 @@ pools et doivent être raccordés au nouveau modèle avant validation de la dém
 
 ### Analyse des installations persistées
 
-`backend/scripts/analyze_enterprise_installations.py` lit les partitions quotidiennes
+`nexora/scripts/analyze_enterprise_installations.py` lit les partitions quotidiennes
 actives et publie un agrégat Gold par couple machine–logiciel. Les usages de plusieurs
 personnes sur une machine sont réunis. Les journées absentes restent distinctes des
 journées observées sans usage. Le rapport n’est activé que si la génération courante
@@ -202,7 +202,7 @@ Les 30 produits du scénario disposent d'un modèle fictif explicite : quantité
 
 ### Provenance des licences fictives
 
-Le fichier `backend/app/connectors/demo_license_source.json` représente des réponses
+Le fichier `nexora/app/connectors/demo_license_source.json` représente des réponses
 DIGIMON fictives : quantités et unités explicites par produit et filiale, indépendantes
 du nombre d’installations. Ce scénario ne décrit pas les contrats réels.
 

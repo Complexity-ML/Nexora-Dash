@@ -6,4 +6,4 @@ down:
 	docker compose down
 
 test:
-	cd backend && python -m pytest -q
+	cd nexora && python -m pytest -q

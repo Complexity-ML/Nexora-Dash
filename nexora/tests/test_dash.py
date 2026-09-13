@@ -118,3 +118,25 @@ def test_cookie_flags_and_tokens_never_in_callback_response(dash_context):
     assert token not in render(client).text
     assert app.server.config['SESSION_COOKIE_HTTPONLY']
     assert app.server.config['SESSION_COOKIE_SAMESITE']=='Lax'
+
+
+def test_member_forms_use_independent_account_fields(dash_context):
+    app,store,password=dash_context
+    client=app.server.test_client();login(app,client,password)
+    with client.session_transaction() as session:
+        user=store.user_for_token(session['token'])
+        space=service.create_workspace(service.Name(name='Member forms'),user,store)
+        session['workspace']=space['id']
+    email='dash-'+str(uuid4())+'@example.invalid'
+    response=command(app,client,'account-create',{
+        'account-name':'New member','account-email':email,'account-role':'reader',
+        'account-password':secrets.token_urlsafe(24),
+        'member-email':'unrelated@example.invalid','member-role':'admin'})
+    assert response.status_code==200
+    members=service.members(space['id'],user,store)
+    created=next(m for m in members if m['email']==email)
+    assert created['role']=='reader'
+    assert not any(m['email']=='unrelated@example.invalid' for m in members)
+    response=command(app,client,'member-add',{'member-email':'analyst@sam.demo','member-role':'analyst'})
+    assert response.status_code==200
+    assert any(m['email']=='analyst@sam.demo' and m['role']=='analyst' for m in service.members(space['id'],user,store))
