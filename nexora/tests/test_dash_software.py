@@ -58,3 +58,21 @@ def test_product_without_pool_has_analysis_on_the_same_page():
     assert '#/savings' not in rendered
     assert 'Sans d' not in rendered  # no repeated per-subsidiary unmetered table
     assert '2026-01-10' in rendered
+
+
+def test_overview_compares_in_place_and_preserves_scope():
+    from app.dash_ui.pages import overview
+    from app.business import exploration
+    seen=[]
+    def call(fn,*args,**kwargs):
+        if fn is exploration.aggregate:
+            seen.append(kwargs.get('filters'))
+            return {'rows':[{'key0':'s1','label0':'Filiale A','key1':'Linux','label1':'Linux','value':10}], 'groups':1}
+        return {'counts':{'machines':10,'users':8,'sites':1}}
+    ctx=SimpleNamespace(wid='w',call=call,summary=lambda:SimpleNamespace(inactive=[],pools_total=0,trends=[],recovery_potential=0,pools_at_risk=0))
+    page=overview.layout(ctx,{'subsidiary':'s1','comparison':'share'})
+    rendered=json.dumps(page,cls=PlotlyJSONEncoder)
+    assert seen==[{'subsidiary':'s1'}]*3
+    assert 'Comprendre les usages' not in rendered
+    assert '#/overview?subsidiary=s1' in rendered
+    assert '"barnorm": "percent"' in rendered

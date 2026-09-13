@@ -1,9 +1,8 @@
 from dash import html
-import json
 import plotly.graph_objects as go
 from app.business import exploration
 from app.business.errors import BusinessError
-from app.dash_ui.components import header, stats, card, link, table, number, plot, daily_figure, empty, route
+from app.dash_ui.components import header, stats, card, link, table, number, plot, daily_figure, empty, route, filter_control
 from app.business import inventory_service as inventory
 
 
@@ -23,28 +22,48 @@ def layout(ctx, query):
             html.Div([link('Explorer le parc →','inventory'),link('Parc logiciel →','software'),link('Licences →','licenses')],className='actions')],className='stack')
     opportunities=sorted(summary.inactive,key=lambda row:row.recovery_potential,reverse=True)
     distributions=[]
+    filters={key:query[key] for key in ('subsidiary','os') if query.get(key)}
+    comparison=None
+    try:
+        grouped=ctx.call(exploration.aggregate,ctx.wid,entity='machines',dimension='subsidiary',split='os',measure='count',filters=filters,limit=100,lake=True)
+    except BusinessError as exc:
+        if exc.status_code!=409: raise
+    else:
+        rows=grouped['rows']
+        subsidiaries=list(dict.fromkeys(r['label0'] or 'Non renseignée' for r in rows))
+        systems=list(dict.fromkeys(r['label1'] or 'Non renseigné' for r in rows))
+        figure=go.Figure()
+        relative=query.get('comparison')=='share'
+        for system in systems:
+            values=[sum(r['value'] for r in rows if (r['label0'] or 'Non renseignée')==name and (r['label1'] or 'Non renseigné')==system) for name in subsidiaries]
+            figure.add_bar(y=subsidiaries,x=values,name=system,orientation='h',customdata=values,hovertemplate=('%{y}<br>%{customdata:,.0f} machines<br>%{x:.1f} %<extra>%{fullData.name}</extra>' if relative else '%{y}<br>%{x:,.0f} machines<extra>%{fullData.name}</extra>'))
+        figure.update_layout(barmode='stack',barnorm='percent' if relative else '',height=max(380,len(subsidiaries)*36))
+        figure.update_xaxes(title='Part du parc de la filiale (%)' if relative else 'Machines',ticksuffix=' %' if relative else '')
+        figure.update_yaxes(autorange='reversed',automargin=True)
+        comparison=card(html.Div([html.H2('Comparer les systèmes par filiale'),filter_control('comparison','Mesure',query.get('comparison','count'),[{'label':'Nombre de machines','value':'count'},{'label':'Part du parc (%)','value':'share'}])],className='section-heading'),
+            html.Small('La légende permet d’isoler un système. '+('100 combinaisons affichées sur '+str(grouped['groups'])+'.' if grouped['groups']>100 else '')),
+            plot(figure))
     for dimension,title in [('subsidiary','Le parc par filiale'),('os','Systèmes du parc')]:
-        try:data=ctx.call(exploration.aggregate,ctx.wid,entity='machines',dimension=dimension,measure='count',limit=12,lake=True)
+        try:data=ctx.call(exploration.aggregate,ctx.wid,entity='machines',dimension=dimension,measure='count',filters=filters,limit=12,lake=True)
         except BusinessError as exc:
             if exc.status_code!=409:raise
             continue
         rows=data['rows']
         fig=go.Figure(go.Bar(x=[r['value'] for r in rows],y=[r['label0'] or 'Non remonté' for r in rows],orientation='h',
-            customdata=[route('explore',entity='machines',dimension=dimension,selection=json.dumps({dimension:r['key0']}),view='records') for r in rows]))
+            customdata=[route('overview',**{**filters,dimension:r['key0']},comparison=query.get('comparison')) for r in rows],hovertemplate='%{y}<br>%{x:,.0f} machines<extra></extra>'))
         fig.update_yaxes(autorange='reversed',automargin=True)
-        distributions.append(card(html.H2(title),html.Small('Cliquez sur une barre pour explorer les machines. 12 groupes au maximum.'),plot(fig,{'type':'insight-chart','key':dimension})))
+        distributions.append(card(html.H2(title),html.Small('Cliquez sur une barre pour filtrer cette comparaison sur place. 12 groupes au maximum.'),plot(fig,{'type':'insight-chart','key':dimension})))
     return html.Div([
         header('Votre parc, dans la durée.', 'Explorez les usages et identifiez les sujets à examiner.', [link('Explorer les données →','explore')]),
         stats([('Machines et VM',number(counts.get('machines')),'Dans votre périmètre'),
                ('Utilisateurs',number(counts.get('users')),'Salariés et prestataires'),
                ('Sites',number(counts.get('sites')),'Implantations observées'),
                ('Pools analysés',number(summary.pools_total),'Avec historique de capacité')]),
+        html.Div([html.H2('Comparer le parc'),html.Span('Sélection : '+' · '.join(filters.values()) if filters else 'Tout le parc de cet espace'),link('Effacer la sélection','overview') if filters else None],className='section-heading'),
         html.Div(distributions,className='settings-profile'),
-        html.Div([
-            card(html.H2('Comparer les filiales'),html.P('Répartition du parc, systèmes et environnements.'),link('Explorer →','explore',dimension='subsidiary',split='kind')),
-            card(html.H2('Comprendre les usages'),html.P('Installations actives, observations et sujets à examiner.'),link('Analyser →','savings')),
-            card(html.H2('Contrôler les remontées'),html.P('Présence des dimensions et champs manquants.'),link('Voir la qualité →','quality'))
-        ],className='product-grid'),
+        comparison,
+        html.H2('Capacités des pools de l’espace'),
+        html.Small('Les filtres du parc ci-dessus ne répartissent pas les capacités de licence entre filiales.'),
         html.Div([
             card(html.Div([html.H2('Usage des capacités'),link('Comparer les périodes →','annual')],className='section-heading'),
                  plot(daily_figure(summary.trends))),
