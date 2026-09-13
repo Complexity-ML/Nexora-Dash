@@ -14,3 +14,9 @@ Les URL de navigation utilisent un fragment (`#/inventory`, `#/explore`, etc.). 
 Les formulaires utilisent des identifiants de champs explicites. Les parcours « compte existant » et « nouveau compte » possèdent leurs propres champs pour éviter toute attribution involontaire de rôle ou d’adresse.
 
 Les tests `test_dash.py` vérifient les sessions, les contrôles d’accès et des commandes via le transport réel des callbacks Dash. `verify_dash_pages.py` vérifie la construction des pages sur la démonstration configurée ; il ne remplace pas la validation visuelle.
+
+
+Les figures adaptent leur hauteur au nombre de produits. Les comparaisons d’activité
+conservent des barres groupées : une installation active peut aussi avoir des
+relevés incomplets, ces catégories ne doivent pas être additionnées. Les infobulles
+utilisent un fond sombre et un texte clair communs aux graphiques.

@@ -88,6 +88,7 @@ def plot(figure, identifier=None):
     figure.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
         font=dict(family='Arial, sans-serif', color='#dbe5ee'), margin=dict(l=45,r=20,t=20,b=40),
         height=figure.layout.height or 400, colorway=['#68b4ec','#64d5b2','#f1c777'], legend=dict(orientation='h',y=-.22),
+        hoverlabel=dict(bgcolor='#18232e',bordercolor='#8dc4e7',font=dict(color='#f3f7fb',size=14),namelength=-1),
         uirevision='nexora')
     props={'figure':figure, 'config':{'displaylogo':False,'scrollZoom':False}, 'className':'chart'}
     if identifier: props['id']=identifier

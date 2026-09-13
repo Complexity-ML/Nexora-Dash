@@ -27,9 +27,11 @@ def installation_activity(rows):
     for key,label,color in [('installations_active','Avec activité','#6fc6b0'),('installations_without_usage','Sans activité · relevés complets','#e7ad68'),('installations_incomplete','Relevés incomplets','#6d8193')]:
         fig.add_bar(y=[r['software_name'] for r in rows],x=[r.get(key) for r in rows],name=label,orientation='h',marker_color=color,
             customdata=[route('savings',product=r.get('software_id') or r.get('license_pool_id')) for r in rows],
-            hovertemplate='%{y}<br>%{x:,.0f} installations<extra>%{fullData.name}</extra>')
+            hovertemplate='%{y}<br>'+label+' : %{x:,.0f} installations<extra></extra>')
     # Overlapping quality/activity categories must not be stacked into a false total.
-    fig.update_layout(barmode='group')
+    fig.update_layout(barmode='group',height=max(460,len(rows)*54+130),bargap=.28,bargroupgap=.12)
+    fig.update_xaxes(title='Nombre d’installations',tickfont={'size':13})
+    fig.update_yaxes(tickfont={'size':13})
     fig.update_yaxes(autorange='reversed',automargin=True)
     return fig
 
