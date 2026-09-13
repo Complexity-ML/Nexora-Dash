@@ -11,6 +11,7 @@ from flask import Flask, request, session, abort
 from pydantic import ValidationError
 from app.business.errors import BusinessError
 from app.dash_ui.context import current_context
+from app.dash_ui.navigation import navigation
 from app.dash_ui.components import action, field, empty, route, DROPDOWN_LABELS
 from app.dash_ui.actions import execute
 from app.dash_ui.pages import overview, inventory, software, analysis, cases, settings, lake, explore
@@ -126,14 +127,11 @@ def create_app(*, testing=False, store=None):
         except Exception:
             logging.exception('Dash page failed: %s',page)
             content=empty('Lecture indisponible. Réessayez avec Actualiser ; aucune donnée n’a été modifiée.')
-        nav=[]
-        for key,(label,_) in PAGES.items():
-            nav.append(dcc.Link(label,href=route(key),className='nav-item active' if key==page else 'nav-item'))
         return html.Div([
             html.Aside([html.Div([html.Div([html.Span(),html.Span(),html.Span()],className='logo-mark',**{'aria-hidden':'true'}),html.Strong('nexora'),html.Span('SAM',className='badge')],className='brand'),
                 html.Label('ESPACE DE TRAVAIL',className='eyebrow'),
                 dcc.Dropdown(labels=DROPDOWN_LABELS,id='workspace-picker',options=[{'label':w['name'],'value':w['id']} for w in context.spaces],value=context.wid,clearable=False),
-                html.Nav(nav),html.Div([html.Strong(context.user['name']),action('Se déconnecter','logout')],className='sidebar-footer')],className='sidebar'),
+                navigation(PAGES,page),html.Div([html.Strong(context.user['name']),action('Se déconnecter','logout')],className='sidebar-footer')],className='sidebar'),
             html.Main([html.Div([html.Span('DÉMONSTRATION · Données fictives' if os.environ.get('SAM_DATA_SOURCE','mock')=='mock' else 'Source : DIGIMON'),
                                  action('Actualiser','refresh')],className='topbar'),
                 dcc.Loading(html.Div(content,id='page-content'),delay_show=350,type='dot',overlay_style={'visibility':'visible','opacity':.65})],className='main')],className='app-shell')
