@@ -1,0 +1,2162 @@
+[
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": ".NET Runtime",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Acrobat Reader",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "named_user",
+    "quantity": 5280
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "named_user",
+    "quantity": 3960
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "named_user",
+    "quantity": 1980
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "named_user",
+    "quantity": 2640
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "named_user",
+    "quantity": 1100
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "named_user",
+    "quantity": 1540
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "named_user",
+    "quantity": 1320
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "named_user",
+    "quantity": 660
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "named_user",
+    "quantity": 1320
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "named_user",
+    "quantity": 1320
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "named_user",
+    "quantity": 440
+  },
+  {
+    "product": "Adobe Creative Cloud",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "named_user",
+    "quantity": 440
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "concurrent",
+    "quantity": 63
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "concurrent",
+    "quantity": 43
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "concurrent",
+    "quantity": 21
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "concurrent",
+    "quantity": 28
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "concurrent",
+    "quantity": 12
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "concurrent",
+    "quantity": 16
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "concurrent",
+    "quantity": 14
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "concurrent",
+    "quantity": 7
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "concurrent",
+    "quantity": 14
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "concurrent",
+    "quantity": 14
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "concurrent",
+    "quantity": 4
+  },
+  {
+    "product": "Ansys Mechanical",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "concurrent",
+    "quantity": 4
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "named_user",
+    "quantity": 5520
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "named_user",
+    "quantity": 4140
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "named_user",
+    "quantity": 2070
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "named_user",
+    "quantity": 2760
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "named_user",
+    "quantity": 1150
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "named_user",
+    "quantity": 1610
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "named_user",
+    "quantity": 1380
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "named_user",
+    "quantity": null
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "named_user",
+    "quantity": 1380
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "named_user",
+    "quantity": 1380
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "named_user",
+    "quantity": 460
+  },
+  {
+    "product": "ArcGIS Pro",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "named_user",
+    "quantity": 460
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "concurrent",
+    "quantity": 192
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "concurrent",
+    "quantity": 144
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "concurrent",
+    "quantity": 72
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "concurrent",
+    "quantity": 96
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "concurrent",
+    "quantity": 40
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "concurrent",
+    "quantity": 56
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "concurrent",
+    "quantity": 48
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "concurrent",
+    "quantity": 24
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "concurrent",
+    "quantity": 48
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "concurrent",
+    "quantity": 48
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "concurrent",
+    "quantity": 16
+  },
+  {
+    "product": "Autodesk Product Design",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "concurrent",
+    "quantity": 16
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "concurrent",
+    "quantity": 49
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "concurrent",
+    "quantity": 32
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "concurrent",
+    "quantity": 16
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "concurrent",
+    "quantity": 21
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "concurrent",
+    "quantity": 9
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "concurrent",
+    "quantity": 12
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "concurrent",
+    "quantity": 10
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "concurrent",
+    "quantity": 5
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "concurrent",
+    "quantity": 10
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "concurrent",
+    "quantity": 10
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "concurrent",
+    "quantity": 3
+  },
+  {
+    "product": "CATIA",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "concurrent",
+    "quantity": 3
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "concurrent",
+    "quantity": 72
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "concurrent",
+    "quantity": 54
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "concurrent",
+    "quantity": 27
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "concurrent",
+    "quantity": 36
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "concurrent",
+    "quantity": 15
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "concurrent",
+    "quantity": 21
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "concurrent",
+    "quantity": 18
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "concurrent",
+    "quantity": 9
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "concurrent",
+    "quantity": 18
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "concurrent",
+    "quantity": 18
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "concurrent",
+    "quantity": 6
+  },
+  {
+    "product": "COMSOL Multiphysics",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "concurrent",
+    "quantity": 6
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Cockpit",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Firefox",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "IIS",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "KVM",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "LibreOffice",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "concurrent",
+    "quantity": 192
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "concurrent",
+    "quantity": 144
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "concurrent",
+    "quantity": 72
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "concurrent",
+    "quantity": 96
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "concurrent",
+    "quantity": 40
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "concurrent",
+    "quantity": 56
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "concurrent",
+    "quantity": 48
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "concurrent",
+    "quantity": 24
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "concurrent",
+    "quantity": 48
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "concurrent",
+    "quantity": 48
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "concurrent",
+    "quantity": 16
+  },
+  {
+    "product": "MATLAB",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "concurrent",
+    "quantity": 16
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "concurrent",
+    "quantity": 39
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "concurrent",
+    "quantity": 25
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "concurrent",
+    "quantity": 12
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "concurrent",
+    "quantity": 16
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "concurrent",
+    "quantity": 7
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "concurrent",
+    "quantity": 9
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "concurrent",
+    "quantity": 8
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "concurrent",
+    "quantity": null
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "concurrent",
+    "quantity": 8
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "concurrent",
+    "quantity": 8
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "concurrent",
+    "quantity": 2
+  },
+  {
+    "product": "Maple",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "concurrent",
+    "quantity": 2
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "named_user",
+    "quantity": 30720
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "named_user",
+    "quantity": 23040
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "named_user",
+    "quantity": 11520
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "named_user",
+    "quantity": 15360
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "named_user",
+    "quantity": 6400
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "named_user",
+    "quantity": 8960
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "named_user",
+    "quantity": 7680
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "named_user",
+    "quantity": 3840
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "named_user",
+    "quantity": 7680
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "named_user",
+    "quantity": 7680
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "named_user",
+    "quantity": 2560
+  },
+  {
+    "product": "Microsoft 365 Apps",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "named_user",
+    "quantity": 2560
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "device",
+    "quantity": 27600
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "device",
+    "quantity": 20700
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "device",
+    "quantity": 10350
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "device",
+    "quantity": 13800
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "device",
+    "quantity": 5750
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "device",
+    "quantity": 8050
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "device",
+    "quantity": 6900
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "device",
+    "quantity": 3450
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "device",
+    "quantity": 6900
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "device",
+    "quantity": 6900
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "device",
+    "quantity": 2300
+  },
+  {
+    "product": "Microsoft Defender",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "device",
+    "quantity": 2300
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Edge",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "named_user",
+    "quantity": 30000
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "named_user",
+    "quantity": 22500
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "named_user",
+    "quantity": 11250
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "named_user",
+    "quantity": 15000
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "named_user",
+    "quantity": 6250
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "named_user",
+    "quantity": 8750
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "named_user",
+    "quantity": 7500
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "named_user",
+    "quantity": 3750
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "named_user",
+    "quantity": 7500
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "named_user",
+    "quantity": 7500
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "named_user",
+    "quantity": 2500
+  },
+  {
+    "product": "Microsoft Teams",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "named_user",
+    "quantity": 2500
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Nginx",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "OpenSSH",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "concurrent",
+    "quantity": 67
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "concurrent",
+    "quantity": 46
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "concurrent",
+    "quantity": 23
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "concurrent",
+    "quantity": 31
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "concurrent",
+    "quantity": 13
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "concurrent",
+    "quantity": 18
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "concurrent",
+    "quantity": 15
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "concurrent",
+    "quantity": 7
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "concurrent",
+    "quantity": 15
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "concurrent",
+    "quantity": 15
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "concurrent",
+    "quantity": 5
+  },
+  {
+    "product": "PTC Creo",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "concurrent",
+    "quantity": 5
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "PostgreSQL",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "device",
+    "quantity": 5400
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "device",
+    "quantity": 4050
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "device",
+    "quantity": 2025
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "device",
+    "quantity": 2700
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "device",
+    "quantity": 1125
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "device",
+    "quantity": 1575
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "device",
+    "quantity": 1350
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "device",
+    "quantity": 675
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "device",
+    "quantity": 1350
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "device",
+    "quantity": 1350
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "device",
+    "quantity": 450
+  },
+  {
+    "product": "Red Hat Enterprise Linux 9",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "device",
+    "quantity": 450
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "concurrent",
+    "quantity": 52
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "concurrent",
+    "quantity": 34
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "concurrent",
+    "quantity": 17
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "concurrent",
+    "quantity": 23
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "concurrent",
+    "quantity": 9
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "concurrent",
+    "quantity": 13
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "concurrent",
+    "quantity": 11
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "concurrent",
+    "quantity": 5
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "concurrent",
+    "quantity": 11
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "concurrent",
+    "quantity": 11
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "concurrent",
+    "quantity": 3
+  },
+  {
+    "product": "SIMULIA Abaqus",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "concurrent",
+    "quantity": 3
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "concurrent",
+    "quantity": 105
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "concurrent",
+    "quantity": 75
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "concurrent",
+    "quantity": 37
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "concurrent",
+    "quantity": 50
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "concurrent",
+    "quantity": 21
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "concurrent",
+    "quantity": 29
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "concurrent",
+    "quantity": 25
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "concurrent",
+    "quantity": 12
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "concurrent",
+    "quantity": 25
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "concurrent",
+    "quantity": 25
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "concurrent",
+    "quantity": 8
+  },
+  {
+    "product": "SOLIDWORKS",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "concurrent",
+    "quantity": 8
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "concurrent",
+    "quantity": 52
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "concurrent",
+    "quantity": 34
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "concurrent",
+    "quantity": 17
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "concurrent",
+    "quantity": 23
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "concurrent",
+    "quantity": 9
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "concurrent",
+    "quantity": 13
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "concurrent",
+    "quantity": 11
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "concurrent",
+    "quantity": 5
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "concurrent",
+    "quantity": 11
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "concurrent",
+    "quantity": 11
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "concurrent",
+    "quantity": 3
+  },
+  {
+    "product": "Siemens NX",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "concurrent",
+    "quantity": 3
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "device",
+    "quantity": 28800
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "device",
+    "quantity": 21600
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "device",
+    "quantity": 10800
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "device",
+    "quantity": 14400
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "device",
+    "quantity": 6000
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "device",
+    "quantity": 8400
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "device",
+    "quantity": 7200
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "device",
+    "quantity": 3600
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "device",
+    "quantity": 7200
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "device",
+    "quantity": 7200
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "device",
+    "quantity": 2400
+  },
+  {
+    "product": "Windows 11 Enterprise",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "device",
+    "quantity": 2400
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "device",
+    "quantity": 1728
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "device",
+    "quantity": 1296
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "device",
+    "quantity": 648
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "device",
+    "quantity": 864
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "device",
+    "quantity": 360
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "device",
+    "quantity": 504
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "device",
+    "quantity": 432
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "device",
+    "quantity": 216
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "device",
+    "quantity": 432
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "device",
+    "quantity": 432
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "device",
+    "quantity": 144
+  },
+  {
+    "product": "Windows Server 2022",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "device",
+    "quantity": 144
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-01",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-02",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-03",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-04",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-05",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-06",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-07",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-08",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-09",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-10",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-11",
+    "metric": "unmetered",
+    "quantity": null
+  },
+  {
+    "product": "rsyslog",
+    "subsidiary_id": "ent-sub-12",
+    "metric": "unmetered",
+    "quantity": null
+  }
+]

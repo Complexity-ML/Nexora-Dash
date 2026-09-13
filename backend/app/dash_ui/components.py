@@ -1,0 +1,99 @@
+from urllib.parse import urlencode
+import json
+from dash import html, dcc
+import plotly.graph_objects as go
+
+
+def number(value):
+    if value is None:
+        return '—'
+    return f'{value:,.0f}'.replace(',', '\u202f')
+
+
+def money(cents):
+    return 'À renseigner' if cents is None else f'{cents/100:,.2f} €'.replace(',', '\u202f').replace('.', ',')
+
+
+def route(page, **query):
+    query = {k:v for k,v in query.items() if v is not None and v != ''}
+    return '#/'+page+('?' + urlencode(query) if query else '')
+
+
+def link(label, page, **query):
+    return dcc.Link(label, href=route(page, **query), className='text-link')
+
+
+def header(title, subtitle, actions=None):
+    return html.Header([html.Div([html.Div('NEXORA / SAM INTELLIGENCE', className='eyebrow'),
+        html.H1(title), html.P(subtitle)]), html.Div(actions or [], className='actions')], className='page-header')
+
+
+def card(*children, className=''):
+    return html.Section(list(children), className='card '+className)
+
+
+def stats(items):
+    return html.Div([card(html.Span(label, className='muted'), html.Strong(value, className='metric'),
+        html.Small(caption)) for label,value,caption in items], className='stats')
+
+
+def empty(text):
+    return html.Div(text, className='empty', role='status')
+
+
+def table(columns, rows):
+    return html.Div(html.Table([html.Thead(html.Tr([html.Th(label, scope='col') for _,label in columns])),
+        html.Tbody([html.Tr([html.Td(row.get(key, '—')) for key,_ in columns]) for row in rows])]), className='table-scroll') if rows else empty('Aucun résultat pour cette sélection.')
+
+
+def field(key, label, value=None, *, options=None, kind='text', **kwargs):
+    identifier={'type':'field','key':key}
+    if options is not None:
+        control=dcc.Dropdown(id=identifier, options=options, value=value, clearable=False, **kwargs)
+    elif kind == 'textarea':
+        control=dcc.Textarea(id=identifier, value=value or '', **kwargs)
+    else:
+        control=dcc.Input(id=identifier, value=value, type=kind, **kwargs)
+    return html.Div([html.Label(label, htmlFor=json.dumps(identifier,sort_keys=True,separators=(",",":"))), control], className='field')
+
+
+def action(label, name, *, disabled=False, danger=False):
+    return html.Button(label, id={'type':'action','name':name}, n_clicks=0,
+        disabled=disabled, className='button danger' if danger else 'button')
+
+
+def filter_control(key, label, value=None, options=None):
+    identifier={'type':'filter','key':key}
+    control = (dcc.Dropdown(id=identifier, options=options, value=value or '', clearable=False)
+        if options is not None else dcc.Input(id=identifier, value=value or '', type='search', debounce=True, placeholder=label))
+    return html.Div([html.Label(label, htmlFor=json.dumps(identifier,sort_keys=True,separators=(",",":"))), control], className='field')
+
+
+def pager(page, offset, total, size=25, **query):
+    offset = int(offset)
+    return html.Div([link('← Précédent', page, **query, offset=max(0, offset-size)) if offset else html.Span(),
+        html.Span(f'{number(offset+1) if total else 0}–{number(min(offset+size,total))} sur {number(total)}'),
+        link('Suivant →',page,**query,offset=offset+size) if offset+size<total else html.Span()], className='pagination')
+
+
+def plot(figure, identifier=None):
+    figure.update_layout(template='plotly_dark', paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(family='Arial, sans-serif', color='#dbe5ee'), margin=dict(l=45,r=20,t=20,b=40),
+        height=340, colorway=['#68b4ec','#64d5b2','#f1c777'], legend=dict(orientation='h',y=-.22),
+        uirevision='nexora')
+    props={'figure':figure, 'config':{'displaylogo':False,'scrollZoom':False}, 'className':'chart'}
+    if identifier: props['id']=identifier
+    return dcc.Graph(**props)
+
+
+def daily_figure(trends):
+    days={}
+    for trend in trends:
+        for row in trend.daily:
+            entry=days.setdefault(str(row['date']), [0,0,0])
+            entry[0]+=int(row['used']); entry[1]+=int(row['capacity']); entry[2]+=1
+    complete=[(d,used/cap*100 if cap>0 and n==len(trends) else None) for d,(used,cap,n) in sorted(days.items())]
+    fig=go.Figure(go.Scatter(x=[r[0] for r in complete],y=[r[1] for r in complete],mode='lines',
+        name='Utilisation',connectgaps=False,line=dict(width=2),fill='tozeroy',fillcolor='rgba(104,180,236,.08)'))
+    fig.update_yaxes(ticksuffix=' %',rangemode='tozero')
+    return fig

@@ -1,0 +1,1 @@
+"""Dedicated BI publication artifacts."""
