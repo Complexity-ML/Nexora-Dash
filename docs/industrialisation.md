@@ -4,7 +4,7 @@
 
 Faire évoluer le lac de démonstration vers une collecte DIGIMON exploitable,
 avec publication contrôlée, reprise après panne et résultats traçables.
-Les validations nécessitant l’API réelle, le réseau Safran ou Power BI restent
+Les validations nécessitant l’API réelle, le réseau cible ou Power BI restent
 explicitement ouvertes tant que ces environnements ne sont pas disponibles.
 
 ## État constaté
@@ -33,7 +33,7 @@ explicitement ouvertes tant que ces environnements ne sont pas disponibles.
   Gold et refus des accès hors périmètre, de l’écriture et de la suppression.
   Le service de connexion et l’actualisation Power BI restent à valider.
 - Le catalogue indexé a été mesuré sur 138 500 machines avec quatre lectures
-  concurrentes. Ce contrôle local ne valide pas la charge ni le réseau Safran.
+  concurrentes. Ce contrôle local ne valide pas la charge ni le réseau cible.
 
 ## Métadonnées utiles
 
@@ -473,7 +473,7 @@ docker compose --profile recovery up -d --build recovery-worker
 Le service utilise un processus init, accorde cinq minutes à l’arrêt et autorise
 jusqu’à cinq redémarrages après échec. Un arrêt volontaire ne déclenche pas de
 redémarrage. Les cinq minutes sont un réglage local à adapter aux durées Spark
-mesurées. Ce profil vise la stack locale ; il ne configure pas un déploiement Safran.
+mesurées. Ce profil vise la stack locale ; il ne configure pas un déploiement en entreprise.
 
 La configuration Compose a été validée et l’image construite. Un conteneur du
 service a exécuté plusieurs passes sur la base de test et un périmètre vide isolé,

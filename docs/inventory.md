@@ -2,9 +2,8 @@
 
 Le scénario fictif contient 110 000 salariés et 16 500 prestataires, 116 500 postes de travail,
 2 000 hôtes physiques et 20 000 VM. Il répartit le parc sur 180 sites et utilise
-les libellés fournis : SAE, SED, SHE, SLS, SAB, SNA, SST, STS, SAO, SCA,
-SAFRAN GROUP et SAFRAN SIÈGE. Les implantations, effectifs, configurations et
-usages sont inventés ; ils ne décrivent pas ces entités réelles.
+12 entités. Les implantations, effectifs, configurations et usages sont inventés ;
+ils ne décrivent aucune organisation réelle.
 
 Le modèle relie les entités, sites (pays, région, ville), utilisateurs,
 machines et observations logicielles. Les VM référencent leur hôte et partagent
@@ -75,10 +74,10 @@ Les partitions `enterprise-v6` isolent ce scénario des anciennes générations.
 La génération `enterprise-v3` répartit les salariés selon des poids fictifs distincts
 par filiale et par site. La répartition des serveurs diffère de celle des postes.
 Le siège et le groupe privilégient les fonctions support ; les autres entités
-ont des profils industriels. Ces poids ne décrivent pas les effectifs réels Safran.
+ont des profils industriels. Ces poids ne décrivent les effectifs d’aucune organisation réelle.
 Les totaux restent 126 500 personnes et 138 500 machines, dont 20 000 VM.
 
-La génération enterprise-v6 couvre 180 sites fictifs : 34 SAE, 26 SED, 18 SHE, 22 SLS, 10 SAB, 14 SNA, 16 SST, 6 STS, 14 SAO, 14 SCA, 3 SAFRAN GROUP et 3 SAFRAN SIÈGE. Les implantations et ces volumes sont des hypothèses de démonstration.
+La génération enterprise-v6 couvre 180 sites fictifs : 34, 26, 18, 22, 10, 14, 16, 6, 14 et 14 sites pour les dix filiales, puis 3 pour les fonctions groupe et 3 pour le siège. Les implantations et ces volumes sont des hypothèses de démonstration.
 
 ## Architecture cible
 
@@ -205,7 +204,7 @@ Le fichier `nexora/app/connectors/demo_license_source.json` représente des rép
 DIGIMON fictives : quantités et unités explicites par produit et filiale, indépendantes
 du nombre d’installations. Ce scénario ne décrit pas les contrats réels.
 
-Seules les remontées Maple et ArcGIS Pro de STS sont volontairement absentes.
+Seules les remontées Maple et ArcGIS Pro d’une filiale sont volontairement absentes.
 Les 28 autres produits ont une couverture complète. Une quantité absente
 reste absente ; elle ne devient jamais zéro. Les logiciels sans décompte restent
 identifiés séparément. Le tableau additionne uniquement les quantités reçues dans
